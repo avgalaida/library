@@ -31,6 +31,7 @@ func main() {
 		event_pubsub.OnBookCreated(func(m domain.CreateBookDelta) {
 			log.Printf("Создана книга: %v\n", m)
 			hub.broadcast(domain.CreateBookDelta{
+				Type:        "create_book",
 				ID:          m.ID,
 				Meta:        m.Meta,
 				Status:      m.Status,
@@ -42,11 +43,12 @@ func main() {
 		})
 		event_pubsub.OnBookDeleted(func(m domain.DeleteBookDelta) {
 			log.Printf("Удалена книга: %v\n", m)
-			hub.broadcast(domain.NewBookDeletedMessage(
-				m.ID,
-				m.Meta,
-				m.Status,
-			), nil)
+			hub.broadcast(domain.DeleteBookDelta{
+				Type:   "delete_book",
+				ID:     m.ID,
+				Meta:   m.Meta,
+				Status: m.Status,
+			}, nil)
 		})
 
 		return nil

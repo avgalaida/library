@@ -12,8 +12,6 @@ const DELETE_BOOK = 'DELETE_BOOK';
 const SEARCH_SUCCESS = 'SEARCH_SUCCESS';
 const SEARCH_ERROR = 'SEARCH_ERROR';
 
-const MESSAGE_BOOK_CREATED = 1;
-
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
@@ -30,15 +28,25 @@ const store = new Vuex.Store({
       console.error(event);
     },
     SOCKET_ONMESSAGE(state, message) {
-      this.commit(CREATE_BOOK, {
-        id: message.id,
-        meta: message.meta,
-        status: message.status,
-        title: message.title,
-        authors: message.authors,
-        desc: message.desc,
-        createdAt: message.createdAt }
-      );
+      switch (message.type) {
+        case "create_book":
+          this.commit(CREATE_BOOK, {
+            id: message.id,
+            meta: message.meta,
+            status: message.status,
+            title: message.title,
+            authors: message.authors,
+            desc: message.desc,
+            createdAt: message.createdAt }
+          );
+          break;
+        case "delete_book":
+          this.commit(DELETE_BOOK, {
+            id: message.id,
+            meta: message.meta,
+            status: message.status,}
+          );
+      }
     },
     [SET_BOOKS](state, books) {
       state.books = books;
@@ -46,8 +54,8 @@ const store = new Vuex.Store({
     [CREATE_BOOK](state, book) {
       state.books = [book, ...state.books];
     },
-    [DELETE_BOOK](state, book) {
-      state.books = [book, ...state.books];
+    [DELETE_BOOK](state, b) {
+      state.books.forEach((book)=>book.id===b.id?book.status=b.status:book.status=book.status)
     },
     [SEARCH_SUCCESS](state, books) {
       state.searchResults = books;

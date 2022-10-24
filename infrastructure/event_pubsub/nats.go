@@ -48,6 +48,12 @@ func (ep *NatsEventPublisher) Publish(event event_sourcing.BasedEvent) {
 		json.Unmarshal(event.Data, &m)
 		data := ep.writeMessage(&m)
 		ep.nc.Publish(m.Key(), data)
+
+	case "DeleteBookDelta":
+		m := domain.DeleteBookDelta{}
+		json.Unmarshal(event.Data, &m)
+		data := ep.writeMessage(&m)
+		ep.nc.Publish(m.Key(), data)
 	}
 }
 
