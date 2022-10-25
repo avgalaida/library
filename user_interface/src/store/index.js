@@ -33,7 +33,7 @@ const store = new Vuex.Store({
     },
     SOCKET_ONMESSAGE(state, message) {
       switch (message.type) {
-        case "create_book":
+        case "книга.создана":
           this.commit(CREATE_BOOK, {
             id: message.id,
             status: message.status,
@@ -42,25 +42,25 @@ const store = new Vuex.Store({
             createdAt: message.createdAt }
           );
           break;
-        case "delete_book":
+        case "книга.удалена":
           this.commit(DELETE_BOOK, {
             id: message.id,
             }
           );
           break;
-        case "restore_book":
+        case "книга.восстановлена":
           this.commit(RESTORE_BOOK, {
             id: message.id,
             status: message.status,}
           );
           break;
-        case "change_title":
+        case "название.изменено":
           this.commit(CHANGE_TITLE, {
             id: message.id,
             title: message.title,}
           );
           break;
-        case "change_authors":
+        case "авторство.изменено":
           this.commit(CHANGE_AUTHORS, {
             id: message.id,
             authors: message.authors,}

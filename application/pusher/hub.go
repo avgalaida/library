@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"github.com/avgalaida/library/domain"
 	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
@@ -41,12 +42,14 @@ func (hub *Hub) run() {
 	}
 }
 
-func (hub *Hub) broadcast(message interface{}, ignore *Client) {
+func (hub *Hub) broadcast(message domain.Message) {
 	data, _ := json.Marshal(message)
+	typeString := []byte(`{"type":` + message.Key() + `}`)
+	data = append(data, typeString...)
+	log.Println(string(data))
+
 	for _, c := range hub.clients {
-		if c != ignore {
-			c.outbound <- data
-		}
+		c.outbound <- data
 	}
 }
 

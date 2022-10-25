@@ -5,7 +5,6 @@ type Message interface {
 }
 
 type CreateBookDelta struct {
-	Type      string `json:"type"`
 	ID        string `json:"id"`
 	Status    string `json:"status"`
 	Title     string `json:"title"`
@@ -13,21 +12,17 @@ type CreateBookDelta struct {
 	CreatedAt string `json:"createdAt"`
 }
 type DeleteBookDelta struct {
-	Type string `json:"type"`
-	ID   string `json:"id"`
+	ID string `json:"id"`
 }
 type RestoreBookDelta struct {
-	Type   string `json:"type"`
 	ID     string `json:"id"`
 	Status string `json:"status"`
 }
 type ChangeBookTitleDelta struct {
-	Type  string `json:"type"`
 	ID    string `json:"id"`
 	Title string `json:"title"`
 }
 type ChangeBookAuthorsDelta struct {
-	Type    string `json:"type"`
 	ID      string `json:"id"`
 	Authors string `json:"authors"`
 }

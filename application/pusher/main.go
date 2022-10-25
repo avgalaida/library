@@ -30,45 +30,40 @@ func main() {
 
 		event_pubsub.OnBookCreated(func(m domain.CreateBookDelta) {
 			log.Printf("Создана книга: %v\n", m)
-			hub.broadcast(domain.CreateBookDelta{
-				Type:      "create_book",
+			hub.broadcast(&domain.CreateBookDelta{
 				ID:        m.ID,
 				Status:    m.Status,
 				Title:     m.Title,
 				Authors:   m.Authors,
 				CreatedAt: m.CreatedAt,
-			}, nil)
+			})
 		})
 		event_pubsub.OnBookDeleted(func(m domain.DeleteBookDelta) {
 			log.Printf("Удалена книга: %v\n", m)
-			hub.broadcast(domain.DeleteBookDelta{
-				Type: "delete_book",
-				ID:   m.ID,
-			}, nil)
+			hub.broadcast(&domain.DeleteBookDelta{
+				ID: m.ID,
+			})
 		})
 		event_pubsub.OnBookRestored(func(m domain.RestoreBookDelta) {
 			log.Printf("Восстановлена книга: %v\n", m)
-			hub.broadcast(domain.RestoreBookDelta{
-				Type:   "restore_book",
+			hub.broadcast(&domain.RestoreBookDelta{
 				ID:     m.ID,
 				Status: m.Status,
-			}, nil)
+			})
 		})
 		event_pubsub.OnBookTitleChanged(func(m domain.ChangeBookTitleDelta) {
 			log.Printf("Изменено название книги: %v\n", m)
-			hub.broadcast(domain.ChangeBookTitleDelta{
-				Type:  "change_title",
+			hub.broadcast(&domain.ChangeBookTitleDelta{
 				ID:    m.ID,
 				Title: m.Title,
-			}, nil)
+			})
 		})
 		event_pubsub.OnBookAuthorsChanged(func(m domain.ChangeBookAuthorsDelta) {
 			log.Printf("Изменено авторство книги: %v\n", m)
-			hub.broadcast(domain.ChangeBookAuthorsDelta{
-				Type:    "change_authors",
+			hub.broadcast(&domain.ChangeBookAuthorsDelta{
 				ID:      m.ID,
 				Authors: m.Authors,
-			}, nil)
+			})
 		})
 
 		return nil
