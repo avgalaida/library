@@ -5,16 +5,17 @@ import (
 	"github.com/avgalaida/library/infrastructure/event_sourcing"
 )
 
-type Pubsub interface {
+type PubSub interface {
 	Close()
 	Publish(event event_sourcing.BasedEvent)
 	OnBookCreated(f func(domain.CreateBookDelta))
 	OnBookDeleted(f func(domain.DeleteBookDelta))
+	OnBookRestored(f func(domain.RestoreBookDelta))
 }
 
-var impl Pubsub
+var impl PubSub
 
-func SetPubSub(ep Pubsub) {
+func SetPubSub(ep PubSub) {
 	impl = ep
 }
 
@@ -32,4 +33,7 @@ func OnBookCreated(f func(domain.CreateBookDelta)) {
 
 func OnBookDeleted(f func(domain.DeleteBookDelta)) {
 	impl.OnBookDeleted(f)
+}
+func OnBookRestored(f func(domain.RestoreBookDelta)) {
+	impl.OnBookRestored(f)
 }

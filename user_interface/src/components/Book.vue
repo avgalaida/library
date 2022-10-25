@@ -3,7 +3,6 @@
     <div>
       <div><strong>Название:</strong> {{title}}</div>
       <div><strong>Авторы:</strong> {{authors}}</div>
-      <div><strong>Описание:</strong> {{desc}}</div>
       <div><strong>Ревизия:</strong> {{meta}}</div>
     </div>
     <div>
@@ -12,11 +11,10 @@
     </div>
   </div>
 
-  <div v-else class="deletedBook" @submit.prevent>
+  <div v-else-if="status === 'Недоступна'" class="deletedBook" @submit.prevent>
     <div>
       <div><strong>Название:</strong> {{title}}</div>
       <div><strong>Авторы:</strong> {{authors}}</div>
-      <div><strong>Описание:</strong> {{desc}}</div>
       <div><strong>Ревизия:</strong> {{meta}}</div>
     </div>
     <div class="book__btn">
@@ -38,7 +36,6 @@ export default {
     status() {return this.book.status},
     title() {return this.book.title},
     authors() {return this.book.authors},
-    desc() {return this.book.desc},
     createdAt() {return this.book.createdAt}
   },
   methods:{
@@ -46,7 +43,7 @@ export default {
       this.$store.dispatch('deleteBook', {id: this.id});
     },
     restoreBook(){
-      // this.$store.dispatch('deleteBook', {id: "2"});
+      this.$store.dispatch('restoreBook', {id: this.id, status: "Доступна"});
     },
     changeBook(){
 

@@ -23,10 +23,13 @@ func newRouter() (router *mux.Router) {
 	router = mux.NewRouter()
 	router.HandleFunc("/books", createBookCommandHandler).
 		Methods(http.MethodPost).
-		Queries("title", "{title}", "authors", "{authors}", "desc", "{desc}")
+		Queries("title", "{title}", "authors", "{authors}")
 	router.HandleFunc("/books", deleteBookCommandHandler).
 		Methods(http.MethodPost).
 		Queries("id", "{id}")
+	router.HandleFunc("/books", restoreBookCommandHandler).
+		Methods(http.MethodPost).
+		Queries("id", "{id}", "status", "{status}")
 	router.Use(mux.CORSMethodMiddleware(router))
 	return
 }

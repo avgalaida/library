@@ -16,7 +16,7 @@ func bookListQueryHandler(w http.ResponseWriter, r *http.Request) {
 	for aggregate, events := range aemap {
 		book := domain.Book{}
 		book.Base = aggregate
-		book.Base.Meta = "0"
+		book.Base.Meta = 0
 
 		for _, event := range events {
 			book.ApplyEvent(event)

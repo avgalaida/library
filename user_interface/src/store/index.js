@@ -9,6 +9,7 @@ const PUSHER_URL = 'ws://localhost:8080/pusher';
 const SET_BOOKS = 'SET_BOOKS';
 const CREATE_BOOK = 'CREATE_BOOK';
 const DELETE_BOOK = 'DELETE_BOOK';
+const RESTORE_BOOK = 'RESTORE_BOOK';
 const SEARCH_SUCCESS = 'SEARCH_SUCCESS';
 const SEARCH_ERROR = 'SEARCH_ERROR';
 
@@ -36,7 +37,6 @@ const store = new Vuex.Store({
             status: message.status,
             title: message.title,
             authors: message.authors,
-            desc: message.desc,
             createdAt: message.createdAt }
           );
           break;
@@ -46,6 +46,14 @@ const store = new Vuex.Store({
             meta: message.meta,
             status: message.status,}
           );
+          break;
+        case "restore_book":
+          this.commit(RESTORE_BOOK, {
+            id: message.id,
+            meta: message.meta,
+            status: message.status,}
+          );
+          break;
       }
     },
     [SET_BOOKS](state, books) {
@@ -55,6 +63,18 @@ const store = new Vuex.Store({
       state.books = [book, ...state.books];
     },
     [DELETE_BOOK](state, b) {
+      let i;
+      let index;
+      for (index = 0; index < state.books.length; ++index) {
+        if (state.books.at(index).id === b.id) {
+          i = index;
+          break;
+        }
+      }
+      state.books.at(i).status = b.status
+      state.books.at(i).meta = b.meta
+    },
+    [RESTORE_BOOK](state, b) {
       let i;
       let index;
       for (index = 0; index < state.books.length; ++index) {
@@ -87,7 +107,6 @@ const store = new Vuex.Store({
         params: {
           title: book.title,
           authors: book.authors,
-          desc: book.desc
         },
       });
     },
@@ -95,6 +114,14 @@ const store = new Vuex.Store({
       await axios.post(`${BACKEND_URL}/books`, null, {
         params: {
           id: book.id
+        },
+      });
+    },
+    async restoreBook({ commit }, book) {
+      await axios.post(`${BACKEND_URL}/books`, null, {
+        params: {
+          id: book.id,
+          status: book.status
         },
       });
     },

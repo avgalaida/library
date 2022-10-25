@@ -10,9 +10,10 @@ import (
 )
 
 type NatsEventPublisher struct {
-	nc                      *nats.Conn
-	bookCreatedSubscription *nats.Subscription
-	bookDeletedSubscription *nats.Subscription
+	nc                       *nats.Conn
+	bookCreatedSubscription  *nats.Subscription
+	bookDeletedSubscription  *nats.Subscription
+	bookRestoredSubscription *nats.Subscription
 }
 
 func NewNats(url string) (*NatsEventPublisher, error) {
@@ -54,6 +55,12 @@ func (ep *NatsEventPublisher) Publish(event event_sourcing.BasedEvent) {
 		json.Unmarshal(event.Data, &m)
 		data := ep.writeMessage(&m)
 		ep.nc.Publish(m.Key(), data)
+
+	case "RestoreBookDelta":
+		m := domain.RestoreBookDelta{}
+		json.Unmarshal(event.Data, &m)
+		data := ep.writeMessage(&m)
+		ep.nc.Publish(m.Key(), data)
 	}
 }
 
@@ -68,6 +75,14 @@ func (ep *NatsEventPublisher) OnBookCreated(f func(domain.CreateBookDelta)) {
 func (ep *NatsEventPublisher) OnBookDeleted(f func(domain.DeleteBookDelta)) {
 	m := domain.DeleteBookDelta{}
 	ep.bookDeletedSubscription, _ = ep.nc.Subscribe(m.Key(), func(msg *nats.Msg) {
+		ep.readMessage(msg.Data, &m)
+		f(m)
+	})
+}
+
+func (ep *NatsEventPublisher) OnBookRestored(f func(domain.RestoreBookDelta)) {
+	m := domain.RestoreBookDelta{}
+	ep.bookRestoredSubscription, _ = ep.nc.Subscribe(m.Key(), func(msg *nats.Msg) {
 		ep.readMessage(msg.Data, &m)
 		f(m)
 	})

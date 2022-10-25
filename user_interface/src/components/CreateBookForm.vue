@@ -3,7 +3,6 @@
     <h3>Создание книги</h3>
     <my-input placeholder="Название" v-model="bookTitle" type="text"></my-input>
     <my-input placeholder="Авторы" v-model="bookAuthors" type="text"></my-input>
-    <my-input placeholder="Описание" v-model="bookDescription" type="text"></my-input>
     <button @click="createBook" style="align-self: flex-end; margin-top: 15px;">Создать</button>
   </form>
 </template>
@@ -14,7 +13,7 @@ import book from "@/components/Book";
 
 export default {
   data() {
-    return {bookTitle: '', bookAuthors: '', bookDescription: ''}
+    return {bookTitle: '', bookAuthors: ''}
   },
 
   methods: {
@@ -22,9 +21,8 @@ export default {
       this.$store.dispatch('createBook', {
         title: this.bookTitle,
         authors: this.bookAuthors,
-        desc: this.bookDescription
       });
-      this.bookTitle = ''; this.bookAuthors= ''; this.bookDescription = '';
+      this.bookTitle = ''; this.bookAuthors= '';
     },
   },
   components: {book, myInput}
