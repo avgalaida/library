@@ -43,7 +43,7 @@ export default {
   color: darkslategrey;
   font-family: Georgia, serif;
   /*max-width: 768px;*/
-    max-width: 1000px;
+    max-width: 1100px;
 }
 .createBtn{
   background: mediumseagreen;

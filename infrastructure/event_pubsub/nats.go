@@ -40,37 +40,26 @@ func (ep *NatsEventPublisher) readMessage(data []byte, m interface{}) {
 }
 
 func (ep *NatsEventPublisher) Publish(event event_sourcing.BasedEvent) {
+	var m domain.Message
 	switch event.Type {
 	case "CreateBookDelta":
-		m := domain.CreateBookDelta{}
-		json.Unmarshal(event.Data, &m)
-		data := ep.writeMessage(&m)
-		ep.nc.Publish(m.Key(), data)
+		m = &domain.CreateBookDelta{}
 
 	case "DeleteBookDelta":
-		m := domain.DeleteBookDelta{}
-		json.Unmarshal(event.Data, &m)
-		data := ep.writeMessage(&m)
-		ep.nc.Publish(m.Key(), data)
+		m = &domain.DeleteBookDelta{}
 
 	case "RestoreBookDelta":
-		m := domain.RestoreBookDelta{}
-		json.Unmarshal(event.Data, &m)
-		data := ep.writeMessage(&m)
-		ep.nc.Publish(m.Key(), data)
+		m = &domain.RestoreBookDelta{}
 
 	case "ChangeBookTitleDelta":
-		m := domain.ChangeBookTitleDelta{}
-		json.Unmarshal(event.Data, &m)
-		data := ep.writeMessage(&m)
-		ep.nc.Publish(m.Key(), data)
+		m = &domain.ChangeBookTitleDelta{}
 
 	case "ChangeBookAuthorsDelta":
-		m := domain.ChangeBookAuthorsDelta{}
-		json.Unmarshal(event.Data, &m)
-		data := ep.writeMessage(&m)
-		ep.nc.Publish(m.Key(), data)
+		m = &domain.ChangeBookAuthorsDelta{}
 	}
+	json.Unmarshal(event.Data, &m)
+	data := ep.writeMessage(m)
+	ep.nc.Publish(m.Key(), data)
 }
 
 func (ep *NatsEventPublisher) OnBookCreated(f func(domain.CreateBookDelta)) {
