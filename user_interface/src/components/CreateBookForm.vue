@@ -3,7 +3,7 @@
     <h3>Создание книги</h3>
     <my-input placeholder="Название" v-model="bookTitle" type="text"></my-input>
     <my-input placeholder="Авторы" v-model="bookAuthors" type="text"></my-input>
-    <button @click="createBook" style="align-self: flex-end; margin-top: 15px;">Создать</button>
+    <button class="createBtn" type="button" @click="createBook" style="margin-top: 20px;">Создать</button>
   </form>
 </template>
 

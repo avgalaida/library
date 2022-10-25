@@ -28,6 +28,7 @@ func (ep *NatsEventPublisher) Close() {
 	ep.nc.Close()
 	ep.bookCreatedSubscription.Unsubscribe()
 	ep.bookDeletedSubscription.Unsubscribe()
+	ep.bookRestoredSubscription.Unsubscribe()
 }
 
 func (ep *NatsEventPublisher) writeMessage(m domain.Message) []byte {

@@ -55,9 +55,8 @@ func deleteBookCommandHandler(w http.ResponseWriter, r *http.Request) {
 	bookBase := event_store.GetAggregate(id)
 
 	delta := domain.DeleteBookDelta{
-		ID:     bookBase.ID,
-		Meta:   bookBase.Meta + 1,
-		Status: "Недоступна",
+		ID:   bookBase.ID,
+		Meta: bookBase.Meta + 1,
 	}
 
 	event := event_sourcing.NewEvent(bookBase, delta, r.RemoteAddr)
@@ -73,7 +72,7 @@ func restoreBookCommandHandler(w http.ResponseWriter, r *http.Request) {
 
 	bookBase := event_store.GetAggregate(id)
 
-	delta := domain.DeleteBookDelta{
+	delta := domain.RestoreBookDelta{
 		ID:     bookBase.ID,
 		Meta:   bookBase.Meta + 1,
 		Status: status,

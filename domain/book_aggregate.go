@@ -24,13 +24,12 @@ func (b *Book) ApplyEvent(event event_sourcing.BasedEvent) {
 	case "DeleteBookDelta":
 		delta := DeleteBookDelta{}
 		json.Unmarshal(event.Data, &delta)
-		b.Status = delta.Status
+		b.Status = "Недоступна"
 
 	case "RestoreBookDelta":
 		delta := RestoreBookDelta{}
 		json.Unmarshal(event.Data, &delta)
 		b.Status = delta.Status
-
 	}
 
 	b.Base.Meta += 1

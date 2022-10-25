@@ -15,10 +15,9 @@ type CreateBookDelta struct {
 }
 
 type DeleteBookDelta struct {
-	Type   string `json:"type"`
-	ID     string `json:"id"`
-	Meta   int    `json:"meta"`
-	Status string `json:"status"`
+	Type string `json:"type"`
+	ID   string `json:"id"`
+	Meta int    `json:"meta"`
 }
 
 type RestoreBookDelta struct {

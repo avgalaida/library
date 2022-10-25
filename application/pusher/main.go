@@ -43,15 +43,14 @@ func main() {
 		event_pubsub.OnBookDeleted(func(m domain.DeleteBookDelta) {
 			log.Printf("Удалена книга: %v\n", m)
 			hub.broadcast(domain.DeleteBookDelta{
-				Type:   "delete_book",
-				ID:     m.ID,
-				Meta:   m.Meta,
-				Status: m.Status,
+				Type: "delete_book",
+				ID:   m.ID,
+				Meta: m.Meta,
 			}, nil)
 		})
 		event_pubsub.OnBookRestored(func(m domain.RestoreBookDelta) {
 			log.Printf("Восстановлена книга: %v\n", m)
-			hub.broadcast(domain.DeleteBookDelta{
+			hub.broadcast(domain.RestoreBookDelta{
 				Type:   "restore_book",
 				ID:     m.ID,
 				Meta:   m.Meta,

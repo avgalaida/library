@@ -44,7 +44,7 @@ const store = new Vuex.Store({
           this.commit(DELETE_BOOK, {
             id: message.id,
             meta: message.meta,
-            status: message.status,}
+            }
           );
           break;
         case "restore_book":
@@ -71,7 +71,7 @@ const store = new Vuex.Store({
           break;
         }
       }
-      state.books.at(i).status = b.status
+      state.books.at(i).status = "Недоступна"
       state.books.at(i).meta = b.meta
     },
     [RESTORE_BOOK](state, b) {
