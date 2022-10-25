@@ -76,54 +76,22 @@ const store = new Vuex.Store({
       state.books = [book, ...state.books];
     },
     [DELETE_BOOK](state, b) {
-      let index; let i;
-      for (i = 0;i < state.books.length; ++i) {
-        if (state.books.at(i).id === b.id) {
-          index = i;
-          break;
-        }
-      }
-      i = index
-
+      let i = findIndex(state,b.id)
       state.books.at(i).status = "Недоступна"
       state.books.at(i).meta = state.books.at(i).meta+1
     },
     [RESTORE_BOOK](state, b) {
-      let index; let i;
-      for (i = 0;i < state.books.length; ++i) {
-        if (state.books.at(i).id === b.id) {
-          index = i;
-          break;
-        }
-      }
-      i = index
-
+      let i = findIndex(state,b.id)
       state.books.at(i).status = b.status
       state.books.at(i).meta = state.books.at(i).meta+1
     },
     [CHANGE_TITLE](state, b) {
-      let index; let i;
-      for (i = 0;i < state.books.length; ++i) {
-        if (state.books.at(i).id === b.id) {
-          index = i;
-          break;
-        }
-      }
-      i = index
-
+      let i = findIndex(state,b.id)
       state.books.at(i).title = b.title
       state.books.at(i).meta = state.books.at(i).meta+1
     },
     [CHANGE_AUTHORS](state, b) {
-      let index; let i;
-      for (i = 0;i < state.books.length; ++i) {
-        if (state.books.at(i).id === b.id) {
-          index = i;
-          break;
-        }
-      }
-      i = index
-
+      let i = findIndex(state,b.id)
       state.books.at(i).authors = b.authors
       state.books.at(i).meta = state.books.at(i).meta+1
     },
@@ -199,6 +167,17 @@ const store = new Vuex.Store({
     },
   },
 });
+
+function findIndex(state, id) {
+  let index; let i;
+  for (i = 0;i < state.books.length; ++i) {
+    if (state.books.at(i).id === id) {
+      index = i;
+      break;
+    }
+  }
+  return index;
+}
 
 Vue.use(VueNativeSock, PUSHER_URL, { store, format: 'json' });
 
