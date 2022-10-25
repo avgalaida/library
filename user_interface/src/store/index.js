@@ -75,33 +75,55 @@ const store = new Vuex.Store({
       book.meta = "1"
       state.books = [book, ...state.books];
     },
-    findIndex(state,id) {
+    [DELETE_BOOK](state, b) {
       let index; let i;
       for (i = 0;i < state.books.length; ++i) {
-        if (state.books.at(i).id === id) {
+        if (state.books.at(i).id === b.id) {
           index = i;
           break;
         }
       }
-      return index;
-    },
-    [DELETE_BOOK](state, b) {
-      let i = this.findIndex(state,b.id)
+      i = index
+
       state.books.at(i).status = "Недоступна"
       state.books.at(i).meta = state.books.at(i).meta+1
     },
     [RESTORE_BOOK](state, b) {
-      let i = this.findIndex(state,b.id)
+      let index; let i;
+      for (i = 0;i < state.books.length; ++i) {
+        if (state.books.at(i).id === b.id) {
+          index = i;
+          break;
+        }
+      }
+      i = index
+
       state.books.at(i).status = b.status
       state.books.at(i).meta = state.books.at(i).meta+1
     },
     [CHANGE_TITLE](state, b) {
-      let i = this.findIndex(state,b.id)
+      let index; let i;
+      for (i = 0;i < state.books.length; ++i) {
+        if (state.books.at(i).id === b.id) {
+          index = i;
+          break;
+        }
+      }
+      i = index
+
       state.books.at(i).title = b.title
       state.books.at(i).meta = state.books.at(i).meta+1
     },
     [CHANGE_AUTHORS](state, b) {
-      let i = this.findIndex(state,b.id)
+      let index; let i;
+      for (i = 0;i < state.books.length; ++i) {
+        if (state.books.at(i).id === b.id) {
+          index = i;
+          break;
+        }
+      }
+      i = index
+
       state.books.at(i).authors = b.authors
       state.books.at(i).meta = state.books.at(i).meta+1
     },

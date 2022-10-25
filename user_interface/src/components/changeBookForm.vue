@@ -1,8 +1,8 @@
 <template>
   <form @submit.prevent>
     <h3 style="color: darkslategrey">Изменение книги</h3>
-    <my-input placeholder="Название" v-model="bookTitle" type="text"></my-input>
-    <my-input placeholder="Авторы" v-model="bookAuthors" type="text"></my-input>
+    <my-input placeholder="Название" v-model="newBookTitle" type="text"></my-input>
+    <my-input placeholder="Авторы" v-model="newBookAuthors" type="text"></my-input>
     <button class="createBtn" type="button" @click="changeBook" style="margin-top: 20px;">Изменить</button>
   </form>
 </template>
@@ -13,23 +13,26 @@ import book from "@/components/Book";
 
 export default {
   data() {
-    return {bookTitle: this.book.title, bookAuthors: this.book.authors}
+    return {newBookTitle: this.book.title, newBookAuthors: this.book.authors}
   },
   props: ['book'],
   computed:{
     bookTitle() {return this.book.title},
-    bookAuthors() {return this.book.authors}
+    bookAuthors() {return this.book.authors},
+    id() {return this.book.id}
   },
   methods: {
     changeBook(){
-      if (this.bookTitle !== this.book.title()) {
+      if (this.bookTitle !== this.newBookTitle) {
         this.$store.dispatch('changeTitle', {
-              title: this.bookTitle,
+          id: this.id,
+          title: this.newBookTitle,
         });
       }
-      if (this.bookAuthors !== this.book.authors()) {
+      if (this.bookAuthors !== this.newBookAuthors) {
         this.$store.dispatch('changeAuthors', {
-          authors: this.book.authors,
+          id: this.id,
+          authors: this.newBookAuthors,
         });
       }
     }
