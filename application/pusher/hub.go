@@ -44,7 +44,8 @@ func (hub *Hub) run() {
 
 func (hub *Hub) broadcast(message domain.Message) {
 	data, _ := json.Marshal(message)
-	typeString := []byte(`{"type":` + message.Key() + `}`)
+	typeString := []byte(`,"type":"` + message.Key() + `"}`)
+	data = data[:len(data)-1]
 	data = append(data, typeString...)
 	log.Println(string(data))
 
