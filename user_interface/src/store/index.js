@@ -55,7 +55,16 @@ const store = new Vuex.Store({
       state.books = [book, ...state.books];
     },
     [DELETE_BOOK](state, b) {
-      state.books.forEach((book)=>book.id===b.id?book.status=b.status:book.status=book.status)
+      let i;
+      let index;
+      for (index = 0; index < state.books.length; ++index) {
+        if (state.books.at(index).id === b.id) {
+          i = index;
+          break;
+        }
+      }
+      state.books.at(i).status = b.status
+      state.books.at(i).meta = b.meta
     },
     [SEARCH_SUCCESS](state, books) {
       state.searchResults = books;
@@ -74,7 +83,7 @@ const store = new Vuex.Store({
           .catch((err) => console.error(err));
     },
     async createBook({ commit }, book) {
-      const { data } = await axios.post(`${BACKEND_URL}/books`, null, {
+      await axios.post(`${BACKEND_URL}/books`, null, {
         params: {
           title: book.title,
           authors: book.authors,
@@ -83,7 +92,7 @@ const store = new Vuex.Store({
       });
     },
     async deleteBook({ commit }, book) {
-      const { data } = await axios.post(`${BACKEND_URL}/books`, null, {
+      await axios.post(`${BACKEND_URL}/books`, null, {
         params: {
           id: book.id
         },
