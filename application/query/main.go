@@ -23,6 +23,9 @@ type Config struct {
 
 func newRouter() (router *mux.Router) {
 	router = mux.NewRouter()
+	router.HandleFunc("/books", bookVersionQueryHandler).
+		Methods(http.MethodGet).
+		Queries("id", "{id}", "version", "{version}")
 	router.HandleFunc("/books", bookListQueryHandler).
 		Methods(http.MethodGet)
 	router.HandleFunc("/search", searchBooksHandler).

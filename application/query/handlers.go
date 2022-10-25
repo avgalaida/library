@@ -5,11 +5,12 @@ import (
 	"github.com/avgalaida/library/infrastructure/event_store"
 	"github.com/avgalaida/library/infrastructure/search"
 	"github.com/avgalaida/library/infrastructure/utilits"
+	"html/template"
 	"net/http"
 	"strconv"
 )
 
-func bookListQueryHandler(w http.ResponseWriter, r *http.Request) {
+func bookListQueryHandler(w http.ResponseWriter, _ *http.Request) {
 	var books []domain.BookView
 
 	aemap := event_store.GetAll()
@@ -29,21 +30,39 @@ func bookListQueryHandler(w http.ResponseWriter, r *http.Request) {
 	util.ResponseOk(w, books)
 }
 
-func onBookCreated(m domain.CreateBookDelta) {
-	//book := domain.BookView{
-	//	ID:          m.ID,
-	//	Meta:        m.Meta,
-	//	Status:      m.Status,
-	//	Title:       m.Title,
-	//	Authors:     m.Authors,
-	//	Description: m.Description,
-	//	CreatedAt:   m.CreatedAt,
-	//}
+func bookVersionQueryHandler(w http.ResponseWriter, r *http.Request) {
+	id := template.HTMLEscapeString(r.FormValue("id"))
+	version := template.HTMLEscapeString(r.FormValue("version"))
+	aggregate, events := event_store.GetAggregateVersion(id, version)
 
-	//if err := search.InsertBook(context.Background(), book); err != nil {
-	//	log.Println(err)
-	//}
+	book := domain.Book{}
+	book.Base = aggregate
+	book.Base.Meta = 0
+
+	for _, event := range events {
+		book.ApplyEvent(event)
+	}
+
+	bookView := domain.NewBookView(book)
+
+	util.ResponseOk(w, bookView)
 }
+
+//func onBookCreated(m domain.CreateBookDelta) {
+//	//book := domain.BookView{
+//	//	ID:          m.ID,
+//	//	Meta:        m.Meta,
+//	//	Status:      m.Status,
+//	//	Title:       m.Title,
+//	//	Authors:     m.Authors,
+//	//	Description: m.Description,
+//	//	CreatedAt:   m.CreatedAt,
+//	//}
+//
+//	//if err := search.InsertBook(context.Background(), book); err != nil {
+//	//	log.Println(err)
+//	//}
+//}
 
 func searchBooksHandler(w http.ResponseWriter, r *http.Request) {
 	var err error

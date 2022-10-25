@@ -13,15 +13,19 @@ const RESTORE_BOOK = 'RESTORE_BOOK';
 const CHANGE_TITLE = 'CHANGE_TITLE';
 const CHANGE_AUTHORS = 'CHANGE_AUTHORS';
 
+const GET_VERSION_SUCCESS = 'GET_VERSION_SUCCESS';
+
 const SEARCH_SUCCESS = 'SEARCH_SUCCESS';
-const SEARCH_ERROR = 'SEARCH_ERROR';
 
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
-    books: [],
+    books: [
+      {status: "Доступна", title: "наме", authors: "офтор",createdAt: "1", meta: "6"}
+    ],
     searchResults: [],
+    getVersionResult: ''
   },
   mutations: {
     SOCKET_ONOPEN(state, event) {
@@ -98,9 +102,9 @@ const store = new Vuex.Store({
     [SEARCH_SUCCESS](state, books) {
       state.searchResults = books;
     },
-    [SEARCH_ERROR](state) {
-      state.searchResults = [];
-    },
+    [GET_VERSION_SUCCESS](state, book) {
+      state.getVersionResult = book
+    }
   },
   actions: {
     getBooks({ commit }) {
@@ -110,6 +114,13 @@ const store = new Vuex.Store({
             commit(SET_BOOKS, data);
           })
           .catch((err) => console.error(err));
+    },
+    async getVersion({ commit }, query) {
+      axios
+          .get(`${BACKEND_URL}/books`, {
+            params: { query },
+          })
+          .then(({ data }) => commit(GET_VERSION_SUCCESS, data))
     },
     async createBook({ commit }, book) {
       await axios.post(`${BACKEND_URL}/books`, null, {

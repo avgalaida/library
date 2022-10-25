@@ -9,7 +9,6 @@
 
 <script>
 import myInput from "@/components/UI/MyInput";
-import book from "@/components/Book";
 
 export default {
   data() {
@@ -37,7 +36,7 @@ export default {
       }
     }
   },
-  components: {book, myInput}
+  components: {myInput}
 }
 </script>
 

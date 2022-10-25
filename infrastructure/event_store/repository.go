@@ -9,6 +9,7 @@ type Repository interface {
 	InsertAggregate(b event_sourcing.BasedAggregate)
 	GetAggregate(id string) event_sourcing.BasedAggregate
 	UpdateAggregateRevision(id string)
+	GetAggregateVersion(id string, version string) (event_sourcing.BasedAggregate, []event_sourcing.BasedEvent)
 	InsertEvent(e event_sourcing.BasedEvent)
 	GetAll() map[event_sourcing.BasedAggregate][]event_sourcing.BasedEvent
 }
@@ -33,6 +34,10 @@ func GetAggregate(id string) event_sourcing.BasedAggregate {
 
 func UpdateAggregateRevision(id string) {
 	impl.UpdateAggregateRevision(id)
+}
+
+func GetAggregateVersion(id string, version string) (event_sourcing.BasedAggregate, []event_sourcing.BasedEvent) {
+	return impl.GetAggregateVersion(id, version)
 }
 
 func InsertEvent(e event_sourcing.BasedEvent) {
