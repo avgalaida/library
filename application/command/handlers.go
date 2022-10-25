@@ -8,6 +8,7 @@ import (
 	"github.com/avgalaida/library/infrastructure/utilits"
 	"github.com/google/uuid"
 	"html/template"
+	"log"
 	"net/http"
 	"time"
 )
@@ -23,6 +24,7 @@ func reposit(aggregateBase event_sourcing.BasedAggregate, event event_sourcing.B
 }
 
 func createBookCommandHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("createHandler")
 	title := template.HTMLEscapeString(r.FormValue("title"))
 	authors := template.HTMLEscapeString(r.FormValue("authors"))
 
@@ -50,6 +52,7 @@ func createBookCommandHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteBookCommandHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("deleteHandler")
 	id := template.HTMLEscapeString(r.FormValue("id"))
 
 	bookBase := event_store.GetAggregate(id)
@@ -67,6 +70,7 @@ func deleteBookCommandHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func restoreBookCommandHandler(w http.ResponseWriter, r *http.Request) {
+	log.Println("restoreHandler")
 	id := template.HTMLEscapeString(r.FormValue("id"))
 	status := template.HTMLEscapeString(r.FormValue("status"))
 
