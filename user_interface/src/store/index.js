@@ -20,7 +20,7 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
-    books: [{id: "1",title: "название", authors: "авторы", meta: "1",status:"Доступна",createdAt: "1"}],
+    books: [],
     searchResults: [],
   },
   mutations: {
