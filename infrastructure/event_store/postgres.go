@@ -10,10 +10,6 @@ type PostgresRepository struct {
 	db *sql.DB
 }
 
-func (r *PostgresRepository) UpdateAggregateRevision(id string) {
-	r.db.Exec("UPDATE aggregates SET meta=meta+1 WHERE id = $1", id)
-}
-
 func NewPostgres(url string) (*PostgresRepository, error) {
 	db, err := sql.Open("postgres", url)
 	if err != nil {
@@ -49,6 +45,10 @@ func (r *PostgresRepository) GetAggregate(id string) event_sourcing.BasedAggrega
 		aggregateRows.Scan(&aggregate.ID, &aggregate.Meta, &aggregate.CreatedAt)
 	}
 	return aggregate
+}
+
+func (r *PostgresRepository) UpdateAggregateRevision(id string) {
+	r.db.Exec("UPDATE aggregates SET meta=meta+1 WHERE id = $1", id)
 }
 
 func (r *PostgresRepository) InsertEvent(e event_sourcing.BasedEvent) {
