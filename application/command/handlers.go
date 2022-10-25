@@ -34,7 +34,6 @@ func createBookCommandHandler(w http.ResponseWriter, r *http.Request) {
 
 	delta := domain.CreateBookDelta{
 		ID:        bookBase.ID,
-		Meta:      bookBase.Meta + 1,
 		Status:    "Доступна",
 		Title:     title,
 		Authors:   authors,
@@ -43,9 +42,7 @@ func createBookCommandHandler(w http.ResponseWriter, r *http.Request) {
 
 	event := event_sourcing.NewEvent(bookBase, delta, r.RemoteAddr)
 	event_store.InsertAggregate(bookBase)
-
 	reposit(bookBase, event)
-
 	util.ResponseOk(w, response{ID: bookBase.ID})
 }
 
@@ -54,10 +51,7 @@ func deleteBookCommandHandler(w http.ResponseWriter, r *http.Request) {
 
 	bookBase := event_store.GetAggregate(id)
 
-	delta := domain.DeleteBookDelta{
-		ID:   bookBase.ID,
-		Meta: bookBase.Meta + 1,
-	}
+	delta := domain.DeleteBookDelta{ID: bookBase.ID}
 
 	event := event_sourcing.NewEvent(bookBase, delta, r.RemoteAddr)
 
@@ -74,8 +68,43 @@ func restoreBookCommandHandler(w http.ResponseWriter, r *http.Request) {
 
 	delta := domain.RestoreBookDelta{
 		ID:     bookBase.ID,
-		Meta:   bookBase.Meta + 1,
 		Status: status,
+	}
+
+	event := event_sourcing.NewEvent(bookBase, delta, r.RemoteAddr)
+
+	reposit(bookBase, event)
+
+	util.ResponseOk(w, response{ID: bookBase.ID})
+}
+
+func changeBookTitleCommandHandler(w http.ResponseWriter, r *http.Request) {
+	id := template.HTMLEscapeString(r.FormValue("id"))
+	title := template.HTMLEscapeString(r.FormValue("title"))
+
+	bookBase := event_store.GetAggregate(id)
+
+	delta := domain.ChangeBookTitleDelta{
+		ID:    bookBase.ID,
+		Title: title,
+	}
+
+	event := event_sourcing.NewEvent(bookBase, delta, r.RemoteAddr)
+
+	reposit(bookBase, event)
+
+	util.ResponseOk(w, response{ID: bookBase.ID})
+}
+
+func changeBookAuthorsCommandHandler(w http.ResponseWriter, r *http.Request) {
+	id := template.HTMLEscapeString(r.FormValue("id"))
+	authors := template.HTMLEscapeString(r.FormValue("authors"))
+
+	bookBase := event_store.GetAggregate(id)
+
+	delta := domain.ChangeBookAuthorsDelta{
+		ID:      bookBase.ID,
+		Authors: authors,
 	}
 
 	event := event_sourcing.NewEvent(bookBase, delta, r.RemoteAddr)

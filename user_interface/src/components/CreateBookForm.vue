@@ -15,7 +15,6 @@ export default {
   data() {
     return {bookTitle: '', bookAuthors: ''}
   },
-
   methods: {
     createBook(){
       this.$store.dispatch('createBook', {

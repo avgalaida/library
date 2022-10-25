@@ -27,6 +27,12 @@ func newRouter() (router *mux.Router) {
 	router.HandleFunc("/books", restoreBookCommandHandler).
 		Methods(http.MethodPost).
 		Queries("id", "{id}", "status", "{status}")
+	router.HandleFunc("/books", changeBookTitleCommandHandler).
+		Methods(http.MethodPost).
+		Queries("id", "{id}", "title", "{title}")
+	router.HandleFunc("/books", changeBookAuthorsCommandHandler).
+		Methods(http.MethodPost).
+		Queries("id", "{id}", "authors", "{authors}")
 	router.HandleFunc("/books", deleteBookCommandHandler).
 		Methods(http.MethodPost).
 		Queries("id", "{id}")

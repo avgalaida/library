@@ -4,10 +4,10 @@
       <h1 class="col-12" style="text-align: center">БИБЛИОТЕКА</h1>
     </div>
 <!--    <h4>{{$store.state.books.at(1)}}</h4>-->
-    <button class="createBtn" type="button" @click="showDialog" style="font-size: 1rem;">Создать книгу</button>
+    <button class="createBtn" type="button" @click="showCreateDialog" style="font-size: 1rem;">Создать книгу</button>
     <h4 style="padding: 20px 0; text-align: center;" >Список книг</h4>
+    <my-dialog v-model="createDialogVisible"><create-book-form/></my-dialog>
     <div class="row">
-      <my-dialog v-model="dialogVisible"><create-book-form/></my-dialog>
       <book-list  class="col"/>
       <Search class="col" />
     </div>
@@ -22,7 +22,7 @@ import createBookForm from "@/components/CreateBookForm";
 import book from "@/components/Book";
 export default {
   data(){
-    return {dialogVisible: false}
+    return {createDialogVisible: false}
   },
   components: {
     book,
@@ -32,7 +32,7 @@ export default {
     createBookForm,
   },
   methods: {
-    showDialog() {this.dialogVisible = true},
+    showCreateDialog() {this.createDialogVisible = true},
   },
 };
 

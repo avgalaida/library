@@ -5,8 +5,9 @@
       <div><strong>Авторы:</strong> {{authors}}</div>
       <div><strong>Ревизия:</strong> {{meta}}</div>
     </div>
+    <my-dialog v-model="changeDialogVisible"><change-book-form :book="this.book"/></my-dialog>
     <div>
-      <button @click="changeBook" style="margin-right: 10px;">Изменить</button>
+      <button @click="showChangeDialog" type="button" style="margin-right: 10px;">Изменить</button>
       <button @click="deleteBook">Удалить</button>
     </div>
   </div>
@@ -24,11 +25,12 @@
 </template>
 
 <script>
-
+import changeBookForm from "@/components/changeBookForm";
+import myDialog from "@/components/UI/MyDialog";
 export default {
   props: ['book'],
   data(){
-    return {isAvailable: true}
+    return {changeDialogVisible: false}
   },
   computed: {
     id() {return this.book.id},
@@ -45,10 +47,9 @@ export default {
     restoreBook(){
       this.$store.dispatch('restoreBook', {id: this.id, status: "Доступна"});
     },
-    changeBook(){
-
-    }
+    showChangeDialog(){this.changeDialogVisible = true;}
   },
+  components: {changeBookForm, myDialog}
 }
 </script>
 

@@ -33,7 +33,6 @@ func main() {
 			hub.broadcast(domain.CreateBookDelta{
 				Type:      "create_book",
 				ID:        m.ID,
-				Meta:      m.Meta,
 				Status:    m.Status,
 				Title:     m.Title,
 				Authors:   m.Authors,
@@ -45,7 +44,6 @@ func main() {
 			hub.broadcast(domain.DeleteBookDelta{
 				Type: "delete_book",
 				ID:   m.ID,
-				Meta: m.Meta,
 			}, nil)
 		})
 		event_pubsub.OnBookRestored(func(m domain.RestoreBookDelta) {
@@ -53,8 +51,23 @@ func main() {
 			hub.broadcast(domain.RestoreBookDelta{
 				Type:   "restore_book",
 				ID:     m.ID,
-				Meta:   m.Meta,
 				Status: m.Status,
+			}, nil)
+		})
+		event_pubsub.OnBookTitleChanged(func(m domain.ChangeBookTitleDelta) {
+			log.Printf("Изменено название книги: %v\n", m)
+			hub.broadcast(domain.ChangeBookTitleDelta{
+				Type:  "change_title",
+				ID:    m.ID,
+				Title: m.Title,
+			}, nil)
+		})
+		event_pubsub.OnBookAuthorsChanged(func(m domain.ChangeBookAuthorsDelta) {
+			log.Printf("Изменено авторство книги: %v\n", m)
+			hub.broadcast(domain.ChangeBookAuthorsDelta{
+				Type:    "change_authors",
+				ID:      m.ID,
+				Authors: m.Authors,
 			}, nil)
 		})
 

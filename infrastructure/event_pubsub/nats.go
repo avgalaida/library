@@ -10,10 +10,12 @@ import (
 )
 
 type NatsEventPublisher struct {
-	nc                       *nats.Conn
-	bookCreatedSubscription  *nats.Subscription
-	bookDeletedSubscription  *nats.Subscription
-	bookRestoredSubscription *nats.Subscription
+	nc                             *nats.Conn
+	bookCreatedSubscription        *nats.Subscription
+	bookDeletedSubscription        *nats.Subscription
+	bookRestoredSubscription       *nats.Subscription
+	bookTitleChangedSubscription   *nats.Subscription
+	bookAuthorsChangedSubscription *nats.Subscription
 }
 
 func NewNats(url string) (*NatsEventPublisher, error) {
@@ -29,6 +31,8 @@ func (ep *NatsEventPublisher) Close() {
 	ep.bookCreatedSubscription.Unsubscribe()
 	ep.bookDeletedSubscription.Unsubscribe()
 	ep.bookRestoredSubscription.Unsubscribe()
+	ep.bookTitleChangedSubscription.Unsubscribe()
+	ep.bookAuthorsChangedSubscription.Unsubscribe()
 }
 
 func (ep *NatsEventPublisher) writeMessage(m domain.Message) []byte {
@@ -62,6 +66,18 @@ func (ep *NatsEventPublisher) Publish(event event_sourcing.BasedEvent) {
 		json.Unmarshal(event.Data, &m)
 		data := ep.writeMessage(&m)
 		ep.nc.Publish(m.Key(), data)
+
+	case "ChangeBookTitleDelta":
+		m := domain.ChangeBookTitleDelta{}
+		json.Unmarshal(event.Data, &m)
+		data := ep.writeMessage(&m)
+		ep.nc.Publish(m.Key(), data)
+
+	case "ChangeBookAuthorsDelta":
+		m := domain.ChangeBookAuthorsDelta{}
+		json.Unmarshal(event.Data, &m)
+		data := ep.writeMessage(&m)
+		ep.nc.Publish(m.Key(), data)
 	}
 }
 
@@ -84,6 +100,22 @@ func (ep *NatsEventPublisher) OnBookDeleted(f func(domain.DeleteBookDelta)) {
 func (ep *NatsEventPublisher) OnBookRestored(f func(domain.RestoreBookDelta)) {
 	m := domain.RestoreBookDelta{}
 	ep.bookRestoredSubscription, _ = ep.nc.Subscribe(m.Key(), func(msg *nats.Msg) {
+		ep.readMessage(msg.Data, &m)
+		f(m)
+	})
+}
+
+func (ep *NatsEventPublisher) OnBookTitleChanged(f func(delta domain.ChangeBookTitleDelta)) {
+	m := domain.ChangeBookTitleDelta{}
+	ep.bookTitleChangedSubscription, _ = ep.nc.Subscribe(m.Key(), func(msg *nats.Msg) {
+		ep.readMessage(msg.Data, &m)
+		f(m)
+	})
+}
+
+func (ep *NatsEventPublisher) OnBookAuthorsChanged(f func(delta domain.ChangeBookAuthorsDelta)) {
+	m := domain.ChangeBookAuthorsDelta{}
+	ep.bookAuthorsChangedSubscription, _ = ep.nc.Subscribe(m.Key(), func(msg *nats.Msg) {
 		ep.readMessage(msg.Data, &m)
 		f(m)
 	})

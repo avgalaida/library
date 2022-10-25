@@ -10,6 +10,9 @@ const SET_BOOKS = 'SET_BOOKS';
 const CREATE_BOOK = 'CREATE_BOOK';
 const DELETE_BOOK = 'DELETE_BOOK';
 const RESTORE_BOOK = 'RESTORE_BOOK';
+const CHANGE_TITLE = 'CHANGE_TITLE';
+const CHANGE_AUTHORS = 'CHANGE_AUTHORS';
+
 const SEARCH_SUCCESS = 'SEARCH_SUCCESS';
 const SEARCH_ERROR = 'SEARCH_ERROR';
 
@@ -17,7 +20,7 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
-    books: [],
+    books: [{id: "1",title: "название", authors: "авторы", meta: "1",status:"Доступна",createdAt: "1"}],
     searchResults: [],
   },
   mutations: {
@@ -33,7 +36,6 @@ const store = new Vuex.Store({
         case "create_book":
           this.commit(CREATE_BOOK, {
             id: message.id,
-            meta: message.meta,
             status: message.status,
             title: message.title,
             authors: message.authors,
@@ -43,15 +45,25 @@ const store = new Vuex.Store({
         case "delete_book":
           this.commit(DELETE_BOOK, {
             id: message.id,
-            meta: message.meta,
             }
           );
           break;
         case "restore_book":
           this.commit(RESTORE_BOOK, {
             id: message.id,
-            meta: message.meta,
             status: message.status,}
+          );
+          break;
+        case "change_title":
+          this.commit(CHANGE_TITLE, {
+            id: message.id,
+            title: message.title,}
+          );
+          break;
+        case "change_authors":
+          this.commit(CHANGE_AUTHORS, {
+            id: message.id,
+            authors: message.authors,}
           );
           break;
       }
@@ -60,31 +72,38 @@ const store = new Vuex.Store({
       state.books = books;
     },
     [CREATE_BOOK](state, book) {
+      book.meta = "1"
       state.books = [book, ...state.books];
     },
-    [DELETE_BOOK](state, b) {
-      let i;
-      let index;
-      for (index = 0; index < state.books.length; ++index) {
-        if (state.books.at(index).id === b.id) {
-          i = index;
+    findIndex(state,id) {
+      let index; let i;
+      for (i = 0;i < state.books.length; ++i) {
+        if (state.books.at(i).id === id) {
+          index = i;
           break;
         }
       }
+      return index;
+    },
+    [DELETE_BOOK](state, b) {
+      let i = this.findIndex(state,b.id)
       state.books.at(i).status = "Недоступна"
-      state.books.at(i).meta = b.meta
+      state.books.at(i).meta = state.books.at(i).meta+1
     },
     [RESTORE_BOOK](state, b) {
-      let i;
-      let index;
-      for (index = 0; index < state.books.length; ++index) {
-        if (state.books.at(index).id === b.id) {
-          i = index;
-          break;
-        }
-      }
+      let i = this.findIndex(state,b.id)
       state.books.at(i).status = b.status
-      state.books.at(i).meta = b.meta
+      state.books.at(i).meta = state.books.at(i).meta+1
+    },
+    [CHANGE_TITLE](state, b) {
+      let i = this.findIndex(state,b.id)
+      state.books.at(i).title = b.title
+      state.books.at(i).meta = state.books.at(i).meta+1
+    },
+    [CHANGE_AUTHORS](state, b) {
+      let i = this.findIndex(state,b.id)
+      state.books.at(i).authors = b.authors
+      state.books.at(i).meta = state.books.at(i).meta+1
     },
     [SEARCH_SUCCESS](state, books) {
       state.searchResults = books;
@@ -122,6 +141,22 @@ const store = new Vuex.Store({
         params: {
           id: book.id,
           status: book.status
+        },
+      });
+    },
+    async changeTitle({ commit }, book) {
+      await axios.post(`${BACKEND_URL}/books`, null, {
+        params: {
+          id: book.id,
+          title: book.title
+        },
+      });
+    },
+    async changeAuthors({ commit }, book) {
+      await axios.post(`${BACKEND_URL}/books`, null, {
+        params: {
+          id: book.id,
+          authors: book.authors
         },
       });
     },
