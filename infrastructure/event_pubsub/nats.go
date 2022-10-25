@@ -44,16 +44,12 @@ func (ep *NatsEventPublisher) Publish(event event_sourcing.BasedEvent) {
 	switch event.Type {
 	case "CreateBookDelta":
 		m = &domain.CreateBookDelta{}
-
 	case "DeleteBookDelta":
 		m = &domain.DeleteBookDelta{}
-
 	case "RestoreBookDelta":
 		m = &domain.RestoreBookDelta{}
-
 	case "ChangeBookTitleDelta":
 		m = &domain.ChangeBookTitleDelta{}
-
 	case "ChangeBookAuthorsDelta":
 		m = &domain.ChangeBookAuthorsDelta{}
 	}
