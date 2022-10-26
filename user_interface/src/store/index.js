@@ -25,7 +25,7 @@ const store = new Vuex.Store({
       {status: "Доступна", title: "наме", authors: "офтор",createdAt: "1", meta: "6"}
     ],
     searchResults: [],
-    getVersionResult: ''
+    getVersionResult: [{title:"",authors:"",status:""}]
   },
   mutations: {
     SOCKET_ONOPEN(state, event) {
@@ -76,7 +76,7 @@ const store = new Vuex.Store({
       state.books = books;
     },
     [CREATE_BOOK](state, book) {
-      book.meta = "1"
+      book.meta = 1
       state.books = [book, ...state.books];
     },
     [DELETE_BOOK](state, b) {
@@ -102,8 +102,8 @@ const store = new Vuex.Store({
     [SEARCH_SUCCESS](state, books) {
       state.searchResults = books;
     },
-    [GET_VERSION_SUCCESS](state, book) {
-      state.getVersionResult = book
+    [GET_VERSION_SUCCESS](state, data) {
+      state.getVersionResult = [data]
     }
   },
   actions: {
@@ -118,7 +118,10 @@ const store = new Vuex.Store({
     async getVersion({ commit }, query) {
       axios
           .get(`${BACKEND_URL}/books`, {
-            params: { query },
+            params: {
+              id: query.id,
+              version: query.version
+            },
           })
           .then(({ data }) => commit(GET_VERSION_SUCCESS, data))
     },

@@ -4,18 +4,19 @@
       <h1 class="col-12" style="text-align: center">БИБЛИОТЕКА</h1>
     </div>
 <!--    <h4>{{$store.state.books.at(0)}}</h4>-->
+    <h4>{{$store.state.getVersionResult}}</h4>
     <button class="createBtn" type="button" @click="showCreateDialog" style="font-size: 1rem;">Создать книгу</button>
     <h4 style="padding: 20px 0; text-align: center;" >Список книг</h4>
     <my-dialog v-model="createDialogVisible"><create-book-form/></my-dialog>
     <div class="row">
       <book-list  class="col"/>
-      <Search class="col" />
+<!--      <Search class="col" />-->
     </div>
   </div>
 </template>
 
 <script>
-import Search from '@/components/Search';
+// import Search from '@/components/Search';
 import bookList from "@/components/BookList";
 import myDialog from "@/components/UI/MyDialog";
 import createBookForm from "@/components/CreateBookForm";
@@ -49,10 +50,10 @@ export default {
   background: mediumseagreen;
   color: white;
 }
-.bookBtns{
-  background: white;
-  color: mediumseagreen;
-}
+/*.bookBtns{*/
+/*  background: white;*/
+/*  color: mediumseagreen;*/
+/*}*/
 button{
   background: white;
   color: mediumseagreen;
