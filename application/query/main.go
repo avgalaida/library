@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/avgalaida/library/infrastructure/event_store"
-	"github.com/avgalaida/library/infrastructure/search"
 	"github.com/avgalaida/library/infrastructure/utilits"
 	"github.com/gorilla/mux"
 	"github.com/kelseyhightower/envconfig"
@@ -26,8 +25,6 @@ func newRouter() (router *mux.Router) {
 		Queries("id", "{id}", "version", "{version}")
 	router.HandleFunc("/books", bookListQueryHandler).
 		Methods(http.MethodGet)
-	router.HandleFunc("/search", searchBooksHandler).
-		Methods(http.MethodGet)
 	router.Use(mux.CORSMethodMiddleware(router))
 	return
 }
@@ -47,17 +44,6 @@ func main() {
 		return nil
 	})
 	defer event_store.Close()
-
-	util.ForeverSleep(2*time.Second, func(_ int) error {
-		es, err := search.NewElastic(fmt.Sprintf("http://%s", cfg.ElasticsearchAddress))
-		if err != nil {
-			log.Println(err)
-			return err
-		}
-		search.SetRepository(es)
-		return nil
-	})
-	defer search.Close()
 
 	router := newRouter()
 	if err := http.ListenAndServe(":8080", router); err != nil {

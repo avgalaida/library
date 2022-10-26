@@ -33,7 +33,6 @@ func Publish(event event_sourcing.BasedEvent) {
 func OnBookCreated(f func(domain.CreateBookDelta)) {
 	impl.OnBookCreated(f)
 }
-
 func OnBookDeleted(f func(domain.DeleteBookDelta)) {
 	impl.OnBookDeleted(f)
 }
