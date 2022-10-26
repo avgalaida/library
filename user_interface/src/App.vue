@@ -16,7 +16,7 @@
 </template>
 
 <script>
-// import Search from '@/components/Search';
+
 import bookList from "@/components/BookList";
 import myDialog from "@/components/UI/MyDialog";
 import createBookForm from "@/components/CreateBookForm";
@@ -28,7 +28,6 @@ export default {
   components: {
     book,
     bookList,
-    // Search,
     myDialog,
     createBookForm,
   },
@@ -43,7 +42,6 @@ export default {
 .container {
   color: darkslategrey;
   font-family: Georgia, serif;
-  /*max-width: 768px;*/
     max-width: 720px;
 }
 .createBtn{

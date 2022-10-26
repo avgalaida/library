@@ -13,17 +13,13 @@ const RESTORE_BOOK = 'RESTORE_BOOK';
 const CHANGE_TITLE = 'CHANGE_TITLE';
 const CHANGE_AUTHORS = 'CHANGE_AUTHORS';
 const ROLLBACK_BOOK = 'ROLLBACK_BOOK';
-
 const GET_VERSION_SUCCESS = 'GET_VERSION_SUCCESS';
-
-const SEARCH_SUCCESS = 'SEARCH_SUCCESS';
 
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
     books: [],
-    searchResults: [],
     getVersionResult: [{title:"",authors:"",status:""}]
   },
   mutations: {
@@ -116,9 +112,6 @@ const store = new Vuex.Store({
       state.books.at(i).status = b.status
       state.books.at(i).meta = state.books.at(i).meta+1
     },
-    [SEARCH_SUCCESS](state, books) {
-      state.searchResults = books;
-    },
   },
   actions: {
     getBooks({ commit }) {
@@ -187,21 +180,6 @@ const store = new Vuex.Store({
           authors: book.authors,
         },
       });
-    },
-    async searchBooks({ commit }, query) {
-      if (query.length === 0) {
-        commit(SEARCH_SUCCESS, []);
-        return;
-      }
-      axios
-          .get(`${BACKEND_URL}/search`, {
-            params: { query },
-          })
-          .then(({ data }) => commit(SEARCH_SUCCESS, data))
-          .catch((err) => {
-            console.error(err);
-            commit(SEARCH_ERROR);
-          });
     },
   },
 });
