@@ -11,8 +11,9 @@ type PubSub interface {
 	OnBookCreated(f func(domain.CreateBookDelta))
 	OnBookDeleted(f func(domain.DeleteBookDelta))
 	OnBookRestored(f func(domain.RestoreBookDelta))
-	OnBookTitleChanged(f func(delta domain.ChangeBookTitleDelta))
-	OnBookAuthorsChanged(f func(delta domain.ChangeBookAuthorsDelta))
+	OnBookTitleChanged(f func(domain.ChangeBookTitleDelta))
+	OnBookAuthorsChanged(f func(domain.ChangeBookAuthorsDelta))
+	OnBookRollbacked(f func(domain.RollbackBookDelta))
 }
 
 var impl PubSub
@@ -39,9 +40,12 @@ func OnBookDeleted(f func(domain.DeleteBookDelta)) {
 func OnBookRestored(f func(domain.RestoreBookDelta)) {
 	impl.OnBookRestored(f)
 }
-func OnBookTitleChanged(f func(delta domain.ChangeBookTitleDelta)) {
+func OnBookTitleChanged(f func(domain.ChangeBookTitleDelta)) {
 	impl.OnBookTitleChanged(f)
 }
-func OnBookAuthorsChanged(f func(delta domain.ChangeBookAuthorsDelta)) {
+func OnBookAuthorsChanged(f func(domain.ChangeBookAuthorsDelta)) {
 	impl.OnBookAuthorsChanged(f)
+}
+func OnBookRollbacked(f func(domain.RollbackBookDelta)) {
+	impl.OnBookRollbacked(f)
 }

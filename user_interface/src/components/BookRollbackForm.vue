@@ -14,7 +14,7 @@
             {{option}}
           </option>
         </select>
-        <button class="createBtn" type="button" @click="rollback" style="margin-left: 20px;">Изменить</button>
+        <button class="createBtn" type="button" @click="rollbackBook" style="margin-left: 20px;">Изменить</button>
       </div>
     </form>
   </div>
@@ -24,9 +24,6 @@
 export default {
   data() {
     return {
-      newBookTitle: '',
-      newBookAuthors: '',
-      newBookStatus: '',
       selected: '',
       options: Array.from({length: this.book.meta - 1}, (_, i) => this.book.meta - i - 1)
     }
@@ -50,12 +47,22 @@ export default {
         version: this.selected,
       });
     },
-
-    rollback() {
-
+    rollbackBook() {
+      this.$store.dispatch('rollbackBook', {
+        id: this.id,
+        title: this.newTitle,
+        authors: this.newAuthors,
+        status: this.newStatus
+      });
     }
+  },
+  mounted() {
+    this.$store.state.getVersionResult.at(0).title = this.book.title
+    this.$store.state.getVersionResult.at(0).authors = this.book.authors
+    this.$store.state.getVersionResult.at(0).status = this.book.status
   }
 }
+
 </script>
 
 <style scoped>

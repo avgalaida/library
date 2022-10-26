@@ -12,6 +12,7 @@ const DELETE_BOOK = 'DELETE_BOOK';
 const RESTORE_BOOK = 'RESTORE_BOOK';
 const CHANGE_TITLE = 'CHANGE_TITLE';
 const CHANGE_AUTHORS = 'CHANGE_AUTHORS';
+const ROLLBACK_BOOK = 'ROLLBACK_BOOK';
 
 const GET_VERSION_SUCCESS = 'GET_VERSION_SUCCESS';
 
@@ -70,6 +71,14 @@ const store = new Vuex.Store({
             authors: message.authors,}
           );
           break;
+        case "откат.версии":
+          this.commit(ROLLBACK_BOOK, {
+            id: message.id,
+            title: message.title,
+            authors: message.id,
+            status: message.id,}
+          );
+          break;
       }
     },
     [SET_BOOKS](state, books) {
@@ -99,12 +108,19 @@ const store = new Vuex.Store({
       state.books.at(i).authors = b.authors
       state.books.at(i).meta = state.books.at(i).meta+1
     },
+    [GET_VERSION_SUCCESS](state, data) {
+      state.getVersionResult = [data]
+    },
+    [ROLLBACK_BOOK](state, b) {
+      let i = findIndex(state,b.id)
+      state.books.at(i).title = b.title
+      state.books.at(i).authors = b.authors
+      state.books.at(i).status = b.status
+      state.books.at(i).meta = state.books.at(i).meta+1
+    },
     [SEARCH_SUCCESS](state, books) {
       state.searchResults = books;
     },
-    [GET_VERSION_SUCCESS](state, data) {
-      state.getVersionResult = [data]
-    }
   },
   actions: {
     getBooks({ commit }) {
@@ -114,16 +130,6 @@ const store = new Vuex.Store({
             commit(SET_BOOKS, data);
           })
           .catch((err) => console.error(err));
-    },
-    async getVersion({ commit }, query) {
-      axios
-          .get(`${BACKEND_URL}/books`, {
-            params: {
-              id: query.id,
-              version: query.version
-            },
-          })
-          .then(({ data }) => commit(GET_VERSION_SUCCESS, data))
     },
     async createBook({ commit }, book) {
       await axios.post(`${BACKEND_URL}/books`, null, {
@@ -161,6 +167,26 @@ const store = new Vuex.Store({
         params: {
           id: book.id,
           authors: book.authors
+        },
+      });
+    },
+    async getVersion({ commit }, query) {
+      axios
+          .get(`${BACKEND_URL}/books`, {
+            params: {
+              id: query.id,
+              version: query.version
+            },
+          })
+          .then(({ data }) => commit(GET_VERSION_SUCCESS, data))
+    },
+    async rollbackBook({ commit }, book) {
+      await axios.post(`${BACKEND_URL}/books`, null, {
+        params: {
+          id: book.id,
+          status: book.status,
+          title: book.title,
+          authors: book.authors,
         },
       });
     },

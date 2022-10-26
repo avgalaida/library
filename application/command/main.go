@@ -21,6 +21,9 @@ type Config struct {
 
 func newRouter() (router *mux.Router) {
 	router = mux.NewRouter()
+	router.HandleFunc("/books", rollbackBookCommandHandler).
+		Methods(http.MethodPost).
+		Queries("id", "{id}", "status", "{status}", "title", "{title}", "authors", "{authors}")
 	router.HandleFunc("/books", createBookCommandHandler).
 		Methods(http.MethodPost).
 		Queries("title", "{title}", "authors", "{authors}")

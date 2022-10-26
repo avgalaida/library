@@ -52,6 +52,8 @@ func (ep *NatsEventPublisher) Publish(event event_sourcing.BasedEvent) {
 		m = &domain.ChangeBookTitleDelta{}
 	case "ChangeBookAuthorsDelta":
 		m = &domain.ChangeBookAuthorsDelta{}
+	case "RollbackBookDelta":
+		m = &domain.RollbackBookDelta{}
 	}
 	json.Unmarshal(event.Data, &m)
 	data := ep.writeMessage(m)
@@ -92,6 +94,14 @@ func (ep *NatsEventPublisher) OnBookTitleChanged(f func(delta domain.ChangeBookT
 
 func (ep *NatsEventPublisher) OnBookAuthorsChanged(f func(delta domain.ChangeBookAuthorsDelta)) {
 	m := domain.ChangeBookAuthorsDelta{}
+	ep.eventsSubscription, _ = ep.nc.Subscribe(m.Key(), func(msg *nats.Msg) {
+		ep.readMessage(msg.Data, &m)
+		f(m)
+	})
+}
+
+func (ep *NatsEventPublisher) OnBookRollbacked(f func(domain.RollbackBookDelta)) {
+	m := domain.RollbackBookDelta{}
 	ep.eventsSubscription, _ = ep.nc.Subscribe(m.Key(), func(msg *nats.Msg) {
 		ep.readMessage(msg.Data, &m)
 		f(m)

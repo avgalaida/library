@@ -113,3 +113,25 @@ func changeBookAuthorsCommandHandler(w http.ResponseWriter, r *http.Request) {
 
 	util.ResponseOk(w, response{ID: bookBase.ID})
 }
+
+func rollbackBookCommandHandler(w http.ResponseWriter, r *http.Request) {
+	id := template.HTMLEscapeString(r.FormValue("id"))
+	title := template.HTMLEscapeString(r.FormValue("title"))
+	authors := template.HTMLEscapeString(r.FormValue("authors"))
+	status := template.HTMLEscapeString(r.FormValue("status"))
+
+	bookBase := event_store.GetAggregate(id)
+
+	delta := domain.RollbackBookDelta{
+		ID:      bookBase.ID,
+		Status:  status,
+		Title:   title,
+		Authors: authors,
+	}
+
+	event := event_sourcing.NewEvent(bookBase, delta, r.RemoteAddr)
+
+	reposit(bookBase, event)
+
+	util.ResponseOk(w, response{ID: bookBase.ID})
+}
