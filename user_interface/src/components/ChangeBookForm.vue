@@ -34,6 +34,7 @@ export default {
           authors: this.newBookAuthors,
         });
       }
+      this.$store.state.changeDialogVisible = false;
     }
   },
   components: {myInput}

@@ -5,8 +5,8 @@
       <div><strong>Авторы:</strong> {{authors}}</div>
       <div><strong>Ревизия:</strong> {{meta}}</div>
     </div>
-    <my-dialog v-model="changeDialogVisible"><change-book-form :book="this.book"/></my-dialog>
-    <my-dialog v-model="bookRollbackDialogVisible"><book-rollback-form :book="this.book"/></my-dialog>
+    <my-dialog v-model="this.$store.state.changeDialogVisible"><change-book-form :book="this.book"/></my-dialog>
+    <my-dialog v-model="this.$store.state.bookRollbackDialogVisible"><book-rollback-form :book="this.book"/></my-dialog>
     <div>
       <button @click="showRollbackDialog" type="button" style="margin-right: 10px;">Откат</button>
       <button @click="showChangeDialog" type="button" style="margin-right: 10px;">Изменить</button>
@@ -32,9 +32,6 @@ import bookRollbackForm from "@/components/BookRollbackForm";
 import myDialog from "@/components/UI/MyDialog";
 export default {
   props: ['book'],
-  data(){
-    return {changeDialogVisible: false, bookRollbackDialogVisible: false }
-  },
   computed: {
     id() {return this.book.id},
     meta() {return this.book.meta},
@@ -50,8 +47,8 @@ export default {
     restoreBook(){
       this.$store.dispatch('restoreBook', {id: this.id, status: "Доступна"});
     },
-    showChangeDialog(){this.changeDialogVisible = true;},
-    showRollbackDialog(){this.bookRollbackDialogVisible = true;}
+    showChangeDialog(){this.$store.state.changeDialogVisible = true;},
+    showRollbackDialog(){this.$store.state.bookRollbackDialogVisible = true;}
   },
   components: {changeBookForm, bookRollbackForm, myDialog}
 }

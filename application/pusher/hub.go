@@ -47,7 +47,6 @@ func (hub *Hub) broadcast(message domain.Message) {
 	typeString := []byte(`,"type":"` + message.Key() + `"}`)
 	data = data[:len(data)-1]
 	data = append(data, typeString...)
-	log.Println(string(data))
 
 	for _, c := range hub.clients {
 		c.outbound <- data

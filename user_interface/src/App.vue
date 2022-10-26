@@ -3,8 +3,8 @@
     <div class="row mb-4">
       <h1 class="col-12" style="text-align: center">БИБЛИОТЕКА</h1>
     </div>
-<!--    <h4>{{$store.state.books.at(0)}}</h4>-->
-    <h4>{{$store.state.getVersionResult}}</h4>
+<!--    <h4>{{$store.state.books}}</h4>-->
+<!--    <h4>{{$store.state.getVersionResult}}</h4>-->
     <button class="createBtn" type="button" @click="showCreateDialog" style="font-size: 1rem;">Создать книгу</button>
     <h4 style="padding: 20px 0; text-align: center;" >Список книг</h4>
     <my-dialog v-model="createDialogVisible"><create-book-form/></my-dialog>
@@ -44,7 +44,7 @@ export default {
   color: darkslategrey;
   font-family: Georgia, serif;
   /*max-width: 768px;*/
-    max-width: 1100px;
+    max-width: 720px;
 }
 .createBtn{
   background: mediumseagreen;

@@ -40,6 +40,13 @@ func (b *Book) ApplyEvent(event event_sourcing.BasedEvent) {
 		delta := ChangeBookAuthorsDelta{}
 		json.Unmarshal(event.Data, &delta)
 		b.Authors = delta.Authors
+
+	case "RollbackBookDelta":
+		delta := RollbackBookDelta{}
+		json.Unmarshal(event.Data, &delta)
+		b.Title = delta.Title
+		b.Authors = delta.Authors
+		b.Status = delta.Status
 	}
 
 	b.Base.Meta += 1

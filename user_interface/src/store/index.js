@@ -22,11 +22,11 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
-    books: [
-      {status: "Доступна", title: "наме", authors: "офтор",createdAt: "1", meta: "6"}
-    ],
+    books: [],
     searchResults: [],
-    getVersionResult: [{title:"",authors:"",status:""}]
+    getVersionResult: [{title:"",authors:"",status:""}],
+    changeDialogVisible: false,
+    bookRollbackDialogVisible: false
   },
   mutations: {
     SOCKET_ONOPEN(state, event) {
@@ -75,8 +75,8 @@ const store = new Vuex.Store({
           this.commit(ROLLBACK_BOOK, {
             id: message.id,
             title: message.title,
-            authors: message.id,
-            status: message.id,}
+            authors: message.authors,
+            status: message.status,}
           );
           break;
       }

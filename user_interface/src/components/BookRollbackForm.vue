@@ -54,6 +54,7 @@ export default {
         authors: this.newAuthors,
         status: this.newStatus
       });
+      this.$store.state.bookRollbackDialogVisible = false;
     }
   },
   mounted() {
