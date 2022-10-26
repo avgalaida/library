@@ -24,9 +24,7 @@ const store = new Vuex.Store({
   state: {
     books: [],
     searchResults: [],
-    getVersionResult: [{title:"",authors:"",status:""}],
-    changeDialogVisible: false,
-    bookRollbackDialogVisible: false
+    getVersionResult: [{title:"",authors:"",status:""}]
   },
   mutations: {
     SOCKET_ONOPEN(state, event) {

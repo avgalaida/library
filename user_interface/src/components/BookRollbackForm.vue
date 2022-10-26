@@ -1,4 +1,4 @@
-<template>
+<template >
   <div @submit.prevent>
     <h3 style="color: darkslategrey; text-align: center">Откат книги</h3>
     <form class="rollback">
@@ -54,8 +54,7 @@ export default {
         authors: this.newAuthors,
         status: this.newStatus
       });
-      this.$store.state.bookRollbackDialogVisible = false;
-    }
+    },
   },
   mounted() {
     this.$store.state.getVersionResult.at(0).title = this.book.title

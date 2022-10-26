@@ -15,8 +15,6 @@ export default {
   methods: {
     hideDialog(){
       this.$emit('input', false);
-      this.$store.state.changeDialogVisible = false;
-      this.$store.state.bookRollbackDialogVisible = false;
     }
   }
 }

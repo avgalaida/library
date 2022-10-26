@@ -21,4 +21,15 @@ export default {
   margin-top: 15px;
   border-radius: 4px;
 }
+.input:hover,
+.input:focus {
+  transition: background 0.3s ease-out;
+  border-color: darkslategray;
+  background: darkslategrey;
+  color: white;
+}
+.input:focus {
+  outline: 1px solid #fff;
+  outline-offset: -4px;
+}
 </style>
