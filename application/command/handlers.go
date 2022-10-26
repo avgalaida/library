@@ -54,9 +54,7 @@ func deleteBookCommandHandler(w http.ResponseWriter, r *http.Request) {
 	delta := domain.DeleteBookDelta{ID: bookBase.ID}
 
 	event := event_sourcing.NewEvent(bookBase, delta, r.RemoteAddr)
-
 	reposit(bookBase, event)
-
 	util.ResponseOk(w, response{ID: bookBase.ID})
 }
 
@@ -72,9 +70,7 @@ func restoreBookCommandHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	event := event_sourcing.NewEvent(bookBase, delta, r.RemoteAddr)
-
 	reposit(bookBase, event)
-
 	util.ResponseOk(w, response{ID: bookBase.ID})
 }
 
@@ -90,9 +86,7 @@ func changeBookTitleCommandHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	event := event_sourcing.NewEvent(bookBase, delta, r.RemoteAddr)
-
 	reposit(bookBase, event)
-
 	util.ResponseOk(w, response{ID: bookBase.ID})
 }
 
@@ -108,9 +102,7 @@ func changeBookAuthorsCommandHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	event := event_sourcing.NewEvent(bookBase, delta, r.RemoteAddr)
-
 	reposit(bookBase, event)
-
 	util.ResponseOk(w, response{ID: bookBase.ID})
 }
 
@@ -130,8 +122,6 @@ func rollbackBookCommandHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	event := event_sourcing.NewEvent(bookBase, delta, r.RemoteAddr)
-
 	reposit(bookBase, event)
-
 	util.ResponseOk(w, response{ID: bookBase.ID})
 }
