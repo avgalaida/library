@@ -65,6 +65,15 @@ func main() {
 				Authors: m.Authors,
 			})
 		})
+		event_pubsub.OnBookRollbacked(func(m domain.RollbackBookDelta) {
+			log.Printf("Откат версии книги: %v\n", m)
+			hub.broadcast(&domain.RollbackBookDelta{
+				ID:      m.ID,
+				Status:  m.Status,
+				Title:   m.Title,
+				Authors: m.Authors,
+			})
+		})
 
 		return nil
 	})
