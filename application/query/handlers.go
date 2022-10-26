@@ -48,22 +48,6 @@ func bookVersionQueryHandler(w http.ResponseWriter, r *http.Request) {
 	util.ResponseOk(w, bookView)
 }
 
-//func onBookCreated(m domain.CreateBookDelta) {
-//	//book := domain.BookView{
-//	//	ID:          m.ID,
-//	//	Meta:        m.Meta,
-//	//	Status:      m.Status,
-//	//	Title:       m.Title,
-//	//	Authors:     m.Authors,
-//	//	Description: m.Description,
-//	//	CreatedAt:   m.CreatedAt,
-//	//}
-//
-//	//if err := search.InsertBook(context.Background(), book); err != nil {
-//	//	log.Println(err)
-//	//}
-//}
-
 func searchBooksHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
 

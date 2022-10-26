@@ -9,37 +9,37 @@ import (
 	"github.com/nats-io/nats.go"
 )
 
-type NatsEventPublisher struct {
+type NatsPubSub struct {
 	nc                 *nats.Conn
 	eventsSubscription *nats.Subscription
 }
 
-func NewNats(url string) (*NatsEventPublisher, error) {
+func NewNats(url string) (*NatsPubSub, error) {
 	nc, err := nats.Connect(url)
 	if err != nil {
 		return nil, err
 	}
-	return &NatsEventPublisher{nc: nc}, nil
+	return &NatsPubSub{nc: nc}, nil
 }
 
-func (ep *NatsEventPublisher) Close() {
-	ep.nc.Close()
-	ep.eventsSubscription.Unsubscribe()
+func (ps *NatsPubSub) Close() {
+	ps.nc.Close()
+	ps.eventsSubscription.Unsubscribe()
 }
 
-func (ep *NatsEventPublisher) writeMessage(m domain.Message) []byte {
+func (ps *NatsPubSub) writeMessage(m domain.Message) []byte {
 	b := bytes.Buffer{}
 	gob.NewEncoder(&b).Encode(m)
 	return b.Bytes()
 }
 
-func (ep *NatsEventPublisher) readMessage(data []byte, m interface{}) {
+func (ps *NatsPubSub) readMessage(data []byte, m interface{}) {
 	b := bytes.Buffer{}
 	b.Write(data)
 	gob.NewDecoder(&b).Decode(m)
 }
 
-func (ep *NatsEventPublisher) Publish(event event_sourcing.BasedEvent) {
+func (ps *NatsPubSub) Publish(event event_sourcing.BasedEvent) {
 	var m domain.Message
 	switch event.Type {
 	case "CreateBookDelta":
@@ -56,54 +56,54 @@ func (ep *NatsEventPublisher) Publish(event event_sourcing.BasedEvent) {
 		m = &domain.RollbackBookDelta{}
 	}
 	json.Unmarshal(event.Data, &m)
-	data := ep.writeMessage(m)
-	ep.nc.Publish(m.Key(), data)
+	data := ps.writeMessage(m)
+	ps.nc.Publish(m.Key(), data)
 }
 
-func (ep *NatsEventPublisher) OnBookCreated(f func(domain.CreateBookDelta)) {
+func (ps *NatsPubSub) OnBookCreated(f func(domain.CreateBookDelta)) {
 	m := domain.CreateBookDelta{}
-	ep.eventsSubscription, _ = ep.nc.Subscribe(m.Key(), func(msg *nats.Msg) {
-		ep.readMessage(msg.Data, &m)
+	ps.eventsSubscription, _ = ps.nc.Subscribe(m.Key(), func(msg *nats.Msg) {
+		ps.readMessage(msg.Data, &m)
 		f(m)
 	})
 }
 
-func (ep *NatsEventPublisher) OnBookDeleted(f func(domain.DeleteBookDelta)) {
+func (ps *NatsPubSub) OnBookDeleted(f func(domain.DeleteBookDelta)) {
 	m := domain.DeleteBookDelta{}
-	ep.eventsSubscription, _ = ep.nc.Subscribe(m.Key(), func(msg *nats.Msg) {
-		ep.readMessage(msg.Data, &m)
+	ps.eventsSubscription, _ = ps.nc.Subscribe(m.Key(), func(msg *nats.Msg) {
+		ps.readMessage(msg.Data, &m)
 		f(m)
 	})
 }
 
-func (ep *NatsEventPublisher) OnBookRestored(f func(domain.RestoreBookDelta)) {
+func (ps *NatsPubSub) OnBookRestored(f func(domain.RestoreBookDelta)) {
 	m := domain.RestoreBookDelta{}
-	ep.eventsSubscription, _ = ep.nc.Subscribe(m.Key(), func(msg *nats.Msg) {
-		ep.readMessage(msg.Data, &m)
+	ps.eventsSubscription, _ = ps.nc.Subscribe(m.Key(), func(msg *nats.Msg) {
+		ps.readMessage(msg.Data, &m)
 		f(m)
 	})
 }
 
-func (ep *NatsEventPublisher) OnBookTitleChanged(f func(delta domain.ChangeBookTitleDelta)) {
+func (ps *NatsPubSub) OnBookTitleChanged(f func(delta domain.ChangeBookTitleDelta)) {
 	m := domain.ChangeBookTitleDelta{}
-	ep.eventsSubscription, _ = ep.nc.Subscribe(m.Key(), func(msg *nats.Msg) {
-		ep.readMessage(msg.Data, &m)
+	ps.eventsSubscription, _ = ps.nc.Subscribe(m.Key(), func(msg *nats.Msg) {
+		ps.readMessage(msg.Data, &m)
 		f(m)
 	})
 }
 
-func (ep *NatsEventPublisher) OnBookAuthorsChanged(f func(delta domain.ChangeBookAuthorsDelta)) {
+func (ps *NatsPubSub) OnBookAuthorsChanged(f func(delta domain.ChangeBookAuthorsDelta)) {
 	m := domain.ChangeBookAuthorsDelta{}
-	ep.eventsSubscription, _ = ep.nc.Subscribe(m.Key(), func(msg *nats.Msg) {
-		ep.readMessage(msg.Data, &m)
+	ps.eventsSubscription, _ = ps.nc.Subscribe(m.Key(), func(msg *nats.Msg) {
+		ps.readMessage(msg.Data, &m)
 		f(m)
 	})
 }
 
-func (ep *NatsEventPublisher) OnBookRollbacked(f func(domain.RollbackBookDelta)) {
+func (ps *NatsPubSub) OnBookRollbacked(f func(domain.RollbackBookDelta)) {
 	m := domain.RollbackBookDelta{}
-	ep.eventsSubscription, _ = ep.nc.Subscribe(m.Key(), func(msg *nats.Msg) {
-		ep.readMessage(msg.Data, &m)
+	ps.eventsSubscription, _ = ps.nc.Subscribe(m.Key(), func(msg *nats.Msg) {
+		ps.readMessage(msg.Data, &m)
 		f(m)
 	})
 }

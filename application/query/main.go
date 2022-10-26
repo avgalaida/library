@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/avgalaida/library/infrastructure/event_pubsub"
 	"github.com/avgalaida/library/infrastructure/event_store"
 	"github.com/avgalaida/library/infrastructure/search"
 	"github.com/avgalaida/library/infrastructure/utilits"
@@ -17,7 +16,6 @@ type Config struct {
 	PostgresDB           string `envconfig:"POSTGRES_DB"`
 	PostgresUser         string `envconfig:"POSTGRES_USER"`
 	PostgresPassword     string `envconfig:"POSTGRES_PASSWORD"`
-	NatsAddress          string `envconfig:"NATS_ADDRESS"`
 	ElasticsearchAddress string `envconfig:"ELASTICSEARCH_ADDRESS"`
 }
 
@@ -60,18 +58,6 @@ func main() {
 		return nil
 	})
 	defer search.Close()
-
-	util.ForeverSleep(2*time.Second, func(_ int) error {
-		ps, err := event_pubsub.NewNats(fmt.Sprintf("nats://%s", cfg.NatsAddress))
-		if err != nil {
-			log.Println(err)
-			return err
-		}
-		//ps.OnBookCreated(onBookCreated)
-		event_pubsub.SetPubSub(ps)
-		return nil
-	})
-	defer event_pubsub.Close()
 
 	router := newRouter()
 	if err := http.ListenAndServe(":8080", router); err != nil {

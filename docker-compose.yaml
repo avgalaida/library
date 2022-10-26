@@ -19,14 +19,12 @@ services:
     command: "query"
     depends_on:
       - "postgres"
-      - "nats"
     ports:
       - "8080"
     environment:
       POSTGRES_DB: "library"
       POSTGRES_USER: "user"
       POSTGRES_PASSWORD: "qwerty"
-      NATS_ADDRESS: "nats:4222"
       ELASTICSEARCH_ADDRESS: "elasticsearch:9200"
   pusher:
     build: "."

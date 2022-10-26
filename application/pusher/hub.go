@@ -59,6 +59,7 @@ func (hub *Hub) send(message interface{}, client *Client) {
 }
 
 func (hub *Hub) disconnect(client *Client) {
+	log.Println("отключен клиент: ", client.socket.RemoteAddr())
 	client.close()
 	hub.mutex.Lock()
 	defer hub.mutex.Unlock()
@@ -84,7 +85,7 @@ func (hub *Hub) handleWebSocket(w http.ResponseWriter, r *http.Request) {
 }
 
 func (hub *Hub) onConnect(client *Client) {
-	log.Println("подключен клиент: ", client.socket.RemoteAddr())
+	log.Println("подлючился клиент: ", client.socket.RemoteAddr())
 
 	hub.mutex.Lock()
 	defer hub.mutex.Unlock()
@@ -94,6 +95,6 @@ func (hub *Hub) onConnect(client *Client) {
 }
 
 func (hub *Hub) onDisconnect(client *Client) {
-	log.Println("отключен клиент: ", client.socket.RemoteAddr())
+	log.Println("отключился клиент: ", client.socket.RemoteAddr())
 	hub.disconnect(client)
 }
