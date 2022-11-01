@@ -42,7 +42,7 @@ func (hub *Hub) run() {
 	}
 }
 
-func (hub *Hub) broadcast(message domain.Message) {
+func (hub *Hub) broadcast(message domain.IDelta) {
 	data, _ := json.Marshal(message)
 	typeString := []byte(`,"type":"` + message.Key() + `"}`)
 	data = data[:len(data)-1]
