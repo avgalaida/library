@@ -5,7 +5,6 @@ import (
 	"encoding/gob"
 	"encoding/json"
 	"github.com/avgalaida/library/domain"
-	"github.com/avgalaida/library/infrastructure/event_sourcing"
 	"github.com/nats-io/nats.go"
 )
 
@@ -27,7 +26,7 @@ func (ps *NatsPubSub) Close() {
 	ps.eventsSubscription.Unsubscribe()
 }
 
-func (ps *NatsPubSub) writeMessage(m domain.Message) []byte {
+func (ps *NatsPubSub) writeMessage(m domain.IDelta) []byte {
 	b := bytes.Buffer{}
 	gob.NewEncoder(&b).Encode(m)
 	return b.Bytes()
@@ -39,22 +38,8 @@ func (ps *NatsPubSub) readMessage(data []byte, m interface{}) {
 	gob.NewDecoder(&b).Decode(m)
 }
 
-func (ps *NatsPubSub) Publish(event event_sourcing.BasedEvent) {
-	var m domain.Message
-	switch event.Type {
-	case "CreateBookDelta":
-		m = &domain.CreateBookDelta{}
-	case "DeleteBookDelta":
-		m = &domain.DeleteBookDelta{}
-	case "RestoreBookDelta":
-		m = &domain.RestoreBookDelta{}
-	case "ChangeBookTitleDelta":
-		m = &domain.ChangeBookTitleDelta{}
-	case "ChangeBookAuthorsDelta":
-		m = &domain.ChangeBookAuthorsDelta{}
-	case "RollbackBookDelta":
-		m = &domain.RollbackBookDelta{}
-	}
+func (ps *NatsPubSub) Publish(event domain.BasedEvent) {
+	m := event.Delta
 	json.Unmarshal(event.Data, &m)
 	data := ps.writeMessage(m)
 	ps.nc.Publish(m.Key(), data)

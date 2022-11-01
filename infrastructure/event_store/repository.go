@@ -1,17 +1,17 @@
 package event_store
 
 import (
-	"github.com/avgalaida/library/infrastructure/event_sourcing"
+	"github.com/avgalaida/library/domain"
 )
 
 type Repository interface {
 	Close()
-	InsertAggregate(b event_sourcing.BasedAggregate)
-	GetAggregate(id string) event_sourcing.BasedAggregate
+	InsertAggregate(b domain.BasedAggregate)
+	GetAggregate(id string) domain.BasedAggregate
 	UpdateAggregateRevision(id string)
-	GetAggregateVersion(id string, version string) (event_sourcing.BasedAggregate, []event_sourcing.BasedEvent)
-	InsertEvent(e event_sourcing.BasedEvent)
-	GetAll() map[event_sourcing.BasedAggregate][]event_sourcing.BasedEvent
+	GetAggregateVersion(id string, version string) (domain.BasedAggregate, []domain.BasedEvent)
+	InsertEvent(e domain.BasedEvent)
+	GetAll() map[domain.BasedAggregate][]domain.BasedEvent
 }
 
 var impl Repository
@@ -24,11 +24,11 @@ func Close() {
 	impl.Close()
 }
 
-func InsertAggregate(a event_sourcing.BasedAggregate) {
+func InsertAggregate(a domain.BasedAggregate) {
 	impl.InsertAggregate(a)
 }
 
-func GetAggregate(id string) event_sourcing.BasedAggregate {
+func GetAggregate(id string) domain.BasedAggregate {
 	return impl.GetAggregate(id)
 }
 
@@ -36,14 +36,14 @@ func UpdateAggregateRevision(id string) {
 	impl.UpdateAggregateRevision(id)
 }
 
-func GetAggregateVersion(id string, version string) (event_sourcing.BasedAggregate, []event_sourcing.BasedEvent) {
+func GetAggregateVersion(id string, version string) (domain.BasedAggregate, []domain.BasedEvent) {
 	return impl.GetAggregateVersion(id, version)
 }
 
-func InsertEvent(e event_sourcing.BasedEvent) {
+func InsertEvent(e domain.BasedEvent) {
 	impl.InsertEvent(e)
 }
 
-func GetAll() map[event_sourcing.BasedAggregate][]event_sourcing.BasedEvent {
+func GetAll() map[domain.BasedAggregate][]domain.BasedEvent {
 	return impl.GetAll()
 }

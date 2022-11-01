@@ -1,8 +1,7 @@
-package event_sourcing
+package domain
 
 import (
 	"encoding/json"
-	"github.com/avgalaida/library/domain"
 	"github.com/google/uuid"
 	"reflect"
 	"time"
@@ -16,14 +15,14 @@ type BasedEvent struct {
 	Revision    int
 	Data        []byte
 	Type        string
-	Delta       domain.IDelta
+	Delta       IDelta
 }
 
-func (e *BasedEvent) ApplyOn(b *domain.Book) {
+func (e *BasedEvent) ApplyOn(b *Book) {
 	e.Delta.ApplyOn(b)
 }
 
-func NewEvent(a BasedAggregate, delta domain.IDelta, userID string) BasedEvent {
+func NewEvent(a BasedAggregate, delta IDelta, userID string) BasedEvent {
 	jsonDelta, _ := json.Marshal(delta)
 	eventType := reflect.TypeOf(delta).Name()
 

@@ -2,12 +2,11 @@ package event_pubsub
 
 import (
 	"github.com/avgalaida/library/domain"
-	"github.com/avgalaida/library/infrastructure/event_sourcing"
 )
 
 type PubSub interface {
 	Close()
-	Publish(event event_sourcing.BasedEvent)
+	Publish(event domain.BasedEvent)
 	OnBookCreated(f func(domain.CreateBookDelta))
 	OnBookDeleted(f func(domain.DeleteBookDelta))
 	OnBookRestored(f func(domain.RestoreBookDelta))
@@ -26,7 +25,7 @@ func Close() {
 	impl.Close()
 }
 
-func Publish(event event_sourcing.BasedEvent) {
+func Publish(event domain.BasedEvent) {
 	impl.Publish(event)
 }
 

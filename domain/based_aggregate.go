@@ -1,4 +1,4 @@
-package event_sourcing
+package domain
 
 type BasedAggregate struct {
 	ID        string `json:"id"`

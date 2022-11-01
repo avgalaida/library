@@ -11,7 +11,6 @@ type CreateBookDelta struct {
 	Title     string `json:"title"`
 	Authors   string `json:"authors"`
 	CreatedAt string `json:"createdAt"`
-	Apply     func()
 }
 
 func (d *CreateBookDelta) ApplyOn(b *Book) {
