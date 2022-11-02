@@ -2,46 +2,45 @@ package domain
 
 import (
 	"encoding/json"
-	"github.com/avgalaida/library/infrastructure/event_sourcing"
 )
 
 type Book struct {
-	Base    event_sourcing.BasedAggregate
+	Base    BasedAggregate
 	Status  string
 	Title   string
 	Authors string
 }
 
-func (b *Book) ApplyEvent(event event_sourcing.BasedEvent) {
+func (b *Book) ApplyEvent(event BasedEvent) {
 	switch event.Type {
-	case "CreateBookDelta":
+	case "книга.создана":
 		delta := CreateBookDelta{}
 		json.Unmarshal(event.Data, &delta)
 		b.Status = delta.Status
 		b.Title = delta.Title
 		b.Authors = delta.Authors
 
-	case "DeleteBookDelta":
+	case "книга.удалена":
 		delta := DeleteBookDelta{}
 		json.Unmarshal(event.Data, &delta)
 		b.Status = "Недоступна"
 
-	case "RestoreBookDelta":
+	case "книга.восстановлена":
 		delta := RestoreBookDelta{}
 		json.Unmarshal(event.Data, &delta)
 		b.Status = delta.Status
 
-	case "ChangeBookTitleDelta":
+	case "название.изменено":
 		delta := ChangeBookTitleDelta{}
 		json.Unmarshal(event.Data, &delta)
 		b.Title = delta.Title
 
-	case "ChangeBookAuthorsDelta":
+	case "авторство.изменено":
 		delta := ChangeBookAuthorsDelta{}
 		json.Unmarshal(event.Data, &delta)
 		b.Authors = delta.Authors
 
-	case "RollbackBookDelta":
+	case "откат.версии":
 		delta := RollbackBookDelta{}
 		json.Unmarshal(event.Data, &delta)
 		b.Title = delta.Title

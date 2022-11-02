@@ -5,7 +5,6 @@ import (
 	"encoding/gob"
 	"encoding/json"
 	"github.com/avgalaida/library/domain"
-	"github.com/avgalaida/library/infrastructure/event_sourcing"
 	"github.com/nats-io/nats.go"
 )
 
@@ -27,7 +26,7 @@ func (ps *NatsPubSub) Close() {
 	ps.eventsSubscription.Unsubscribe()
 }
 
-func (ps *NatsPubSub) writeMessage(m domain.Message) []byte {
+func (ps *NatsPubSub) writeMessage(m domain.IDelta) []byte {
 	b := bytes.Buffer{}
 	gob.NewEncoder(&b).Encode(m)
 	return b.Bytes()
@@ -39,20 +38,20 @@ func (ps *NatsPubSub) readMessage(data []byte, m interface{}) {
 	gob.NewDecoder(&b).Decode(m)
 }
 
-func (ps *NatsPubSub) Publish(event event_sourcing.BasedEvent) {
-	var m domain.Message
+func (ps *NatsPubSub) Publish(event domain.BasedEvent) {
+	var m domain.IDelta
 	switch event.Type {
-	case "CreateBookDelta":
+	case "книга.создана":
 		m = &domain.CreateBookDelta{}
-	case "DeleteBookDelta":
+	case "книга.удалена":
 		m = &domain.DeleteBookDelta{}
-	case "RestoreBookDelta":
+	case "книга.восстановлена":
 		m = &domain.RestoreBookDelta{}
-	case "ChangeBookTitleDelta":
+	case "название.изменено":
 		m = &domain.ChangeBookTitleDelta{}
-	case "ChangeBookAuthorsDelta":
+	case "авторство.изменено":
 		m = &domain.ChangeBookAuthorsDelta{}
-	case "RollbackBookDelta":
+	case "откат.версии":
 		m = &domain.RollbackBookDelta{}
 	}
 	json.Unmarshal(event.Data, &m)

@@ -2,7 +2,7 @@ package event_store
 
 import (
 	"database/sql"
-	"github.com/avgalaida/library/infrastructure/event_sourcing"
+	"github.com/avgalaida/library/domain"
 	_ "github.com/lib/pq"
 )
 
@@ -28,7 +28,7 @@ func (r *PostgresRepository) Close() {
 	r.db.Close()
 }
 
-func (r *PostgresRepository) InsertAggregate(a event_sourcing.BasedAggregate) {
+func (r *PostgresRepository) InsertAggregate(a domain.BasedAggregate) {
 	r.db.Exec("INSERT INTO aggregates(id,meta,created_at) VALUES($1,$2,$3)",
 		a.ID,
 		a.Meta,
@@ -36,11 +36,11 @@ func (r *PostgresRepository) InsertAggregate(a event_sourcing.BasedAggregate) {
 	)
 }
 
-func (r *PostgresRepository) GetAggregate(id string) event_sourcing.BasedAggregate {
+func (r *PostgresRepository) GetAggregate(id string) domain.BasedAggregate {
 	aggregateRows, _ := r.db.Query("SELECT * FROM aggregates WHERE id = $1", id)
 	defer aggregateRows.Close()
 
-	var aggregate event_sourcing.BasedAggregate
+	var aggregate domain.BasedAggregate
 	for aggregateRows.Next() {
 		aggregateRows.Scan(&aggregate.ID, &aggregate.Meta, &aggregate.CreatedAt)
 	}
@@ -51,18 +51,18 @@ func (r *PostgresRepository) UpdateAggregateRevision(id string) {
 	r.db.Exec("UPDATE aggregates SET meta=meta+1 WHERE id = $1", id)
 }
 
-func (r *PostgresRepository) GetAggregateVersion(id string, version string) (event_sourcing.BasedAggregate, []event_sourcing.BasedEvent) {
-	var aggregate event_sourcing.BasedAggregate
+func (r *PostgresRepository) GetAggregateVersion(id string, version string) (domain.BasedAggregate, []domain.BasedEvent) {
+	var aggregate domain.BasedAggregate
 	aggregateRows, _ := r.db.Query("SELECT * FROM aggregates WHERE id = $1", id)
 	defer aggregateRows.Close()
 	for aggregateRows.Next() {
 		aggregateRows.Scan(&aggregate.ID, &aggregate.Meta, &aggregate.CreatedAt)
 	}
 
-	var events []event_sourcing.BasedEvent
+	var events []domain.BasedEvent
 	eventRows, _ := r.db.Query("SELECT * FROM events WHERE aggregate_id = $1 and revision <= $2", aggregate.ID, version)
 	for eventRows.Next() {
-		event := event_sourcing.BasedEvent{}
+		event := domain.BasedEvent{}
 		eventRows.Scan(
 			&event.ID,
 			&event.AggregateID,
@@ -77,7 +77,7 @@ func (r *PostgresRepository) GetAggregateVersion(id string, version string) (eve
 	return aggregate, events
 }
 
-func (r *PostgresRepository) InsertEvent(e event_sourcing.BasedEvent) {
+func (r *PostgresRepository) InsertEvent(e domain.BasedEvent) {
 	r.db.Exec("INSERT INTO events(id, aggregate_id, created_at, user_id, revision, delta_data, event_type) VALUES($1,$2,$3,$4,$5,$6,$7)",
 		e.ID,
 		e.AggregateID,
@@ -89,24 +89,24 @@ func (r *PostgresRepository) InsertEvent(e event_sourcing.BasedEvent) {
 	)
 }
 
-func (r *PostgresRepository) GetAll() map[event_sourcing.BasedAggregate][]event_sourcing.BasedEvent {
+func (r *PostgresRepository) GetAll() map[domain.BasedAggregate][]domain.BasedEvent {
 	aggregateRows, _ := r.db.Query("SELECT * FROM aggregates")
 	defer aggregateRows.Close()
 
-	var aggregates []event_sourcing.BasedAggregate
+	var aggregates []domain.BasedAggregate
 	for aggregateRows.Next() {
-		aggregate := event_sourcing.BasedAggregate{}
+		aggregate := domain.BasedAggregate{}
 		aggregateRows.Scan(&aggregate.ID, &aggregate.Meta, &aggregate.CreatedAt)
 		aggregates = append(aggregates, aggregate)
 	}
 
-	aemap := make(map[event_sourcing.BasedAggregate][]event_sourcing.BasedEvent)
+	aemap := make(map[domain.BasedAggregate][]domain.BasedEvent)
 
 	for _, aggregate := range aggregates {
-		var events []event_sourcing.BasedEvent
+		var events []domain.BasedEvent
 		eventRows, _ := r.db.Query("SELECT * FROM events WHERE aggregate_id = $1", aggregate.ID)
 		for eventRows.Next() {
-			event := event_sourcing.BasedEvent{}
+			event := domain.BasedEvent{}
 			eventRows.Scan(
 				&event.ID,
 				&event.AggregateID,
