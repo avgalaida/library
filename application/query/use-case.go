@@ -12,14 +12,12 @@ func GetBookList() []domain.BookView {
 	for aggregate, events := range aemap {
 		book := domain.Book{}
 		book.Base = aggregate
-		book.Base.Meta = 0
 
 		for _, event := range events {
 			event.ApplyOn(&book)
-			book.Base.Meta++
 		}
 
-		bookView := domain.NewBookView(book)
+		bookView := domain.Materialize(book)
 
 		books = append(books, bookView)
 	}
@@ -39,5 +37,5 @@ func GetBookWithVersion(id, version string) domain.BookView {
 		book.Base.Meta++
 	}
 
-	return domain.NewBookView(book)
+	return domain.Materialize(book)
 }

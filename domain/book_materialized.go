@@ -9,7 +9,7 @@ type BookView struct {
 	CreatedAt string `json:"createdAt"`
 }
 
-func NewBookView(b Book) BookView {
+func Materialize(b Book) BookView {
 	return BookView{
 		ID:        b.Base.ID,
 		Meta:      b.Base.Meta,

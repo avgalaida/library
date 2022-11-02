@@ -55,6 +55,6 @@ func rollbackBookCommandHandler(w http.ResponseWriter, r *http.Request) {
 	authors := template.HTMLEscapeString(r.FormValue("authors"))
 	status := template.HTMLEscapeString(r.FormValue("status"))
 
-	resp := RollBackBook(id, title, authors, status, r.RemoteAddr)
+	resp := RollBackBook(id, status, title, authors, r.RemoteAddr)
 	util.ResponseOk(w, response{ID: resp})
 }
